@@ -10,53 +10,53 @@ import settings
 
 def query(query, limit=None, columns=None, extra_filter=None, 
           return_type='table_assoc', item_type=None):
-
-     query = build_query(query, limit = limit, columns = columns,
+    query = build_query(query, limit = limit, columns = columns,
                          extra_filter = extra_filter)
     
-     # Get the current datetime
-     now_dt = datetime.datetime.now()
+    # Get the current datetime
+    now_dt = datetime.datetime.now()
 
-     conn = livestatus.SingleSiteConnection(settings.LIVESTATUS_SOCKET_PATH)
-     conn.limit = limit
+    conn = livestatus.SingleSiteConnection(settings.LIVESTATUS_SOCKET_PATH)
+    conn.limit = limit
 
-     if return_type == "value":
-         return conn.query_value(query)
+    if return_type == "value":
+        return conn.query_value(query)
 
-     if return_type == "row":
-         return conn.query_row(query)
+    if return_type == "row":
+        return conn.query_row(query)
 
-     if return_type == "row_assoc":
-         return conn.query_row_assoc(query)
+    if return_type == "row_assoc":
+        return conn.query_row_assoc(query)
 
-     if return_type == "row_column":
-         return conn.query_row_assoc(query)
+    if return_type == "row_column":
+        return conn.query_row_assoc(query)
 
-     if return_type == "table":
-         return conn.query_table(query)
+    if return_type == "table":
+        return conn.query_table(query)
 
-     if return_type == "table_assoc":
-         data = conn.query_table_assoc(query)
-         for row in data:
-             for col in row.keys():
-                 # If the colname starts with the name last or _time then add 
-                 # a new col called the same with with _dt datetime() obj
-                 if 'last_' in col:
-                     row["%s_dt" % col] = datetime.datetime.fromtimestamp( row[col] )
-                     row["%s_td" % col] = ( now_dt - datetime.datetime.fromtimestamp( row[col] ) )
-                 if '_time' in col and type(row[col]).__name__ == "int":
-                     row["%s_dt" % col] = datetime.datetime.fromtimestamp( row[col] )
-                     row["%s_td" % col] = ( now_dt - datetime.datetime.fromtimestamp( row[col] ) )
-         return data
+    if return_type == "table_assoc":
+        data = conn.query_table_assoc(query)
+        for row in data:
+            for col in row.keys():
+                # If the colname starts with the name last or _time then add 
+                # a new col called the same with with _dt datetime() obj
+                if 'last_' in col:
+                    row["%s_dt" % col] = datetime.datetime.fromtimestamp( row[col] )
+                    row["%s_td" % col] = ( now_dt - datetime.datetime.fromtimestamp( row[col] ) )
+                if '_time' in col and type(row[col]).__name__ == "int":
+                    row["%s_dt" % col] = datetime.datetime.fromtimestamp( row[col] )
+                    row["%s_td" % col] = ( now_dt - datetime.datetime.fromtimestamp( row[col] ) )
+        return data
 
-     if return_type == "summed_stats":
-         return conn.query_summed_stats(query)
+    if return_type == "summed_stats":
+        return conn.query_summed_stats(query)
 
-     raise Exception("Unknown return_type='%s'" % return_type)
+    raise Exception("Unknown return_type='%s'" % return_type)
 
 def query_table(query, limit=None, columns=None, extra_filter=None):
     query = build_query(query, limit = limit, columns = columns, 
                          extra_filter = extra_filter, return_type="table")
+
 def query_table_assoc(query, limit=None, columns=None, extra_filter=None):
     query = build_query(query, limit = limit, columns = columns, 
                          extra_filter = extra_filter, return_type="table_assoc")
@@ -297,4 +297,4 @@ StatsAnd: 2
 
 #------------------------------------------------------------------------------
 if __name__ == "__main__":
-   print get_host("localhost")
+    print get_host("localhost")
