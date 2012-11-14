@@ -13,13 +13,15 @@ Once setup you can either use unix file sockets or tcp sockets.
 In ubuntu the following will get you started if your running this on your nagios server.
 
 
-Get you nagios ready
+Get you nagios ready:
+
     $ sudo apt-get install check-mk-livestatus
     $ vi /etc/nagios3/nagios.cfg
     broker_module=/usr/lib/check_mk/livestatus.o /var/lib/nagios3/rw/live
     event_broker_options=-1
 
-setup and run simplenagios
+Setup and run simplenagios:
+
     $ sudo apt-get install xinetd python-pip git
     $ git clone https://github.com/daniellawrence/simplenagios.git
     $ cd simplenagios
