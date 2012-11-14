@@ -28,4 +28,3 @@ Setup and run simplenagios:
     $ cp xinetd-livestatus /etc/xinetd.d/
     $ pip install -r requirements.txt
     $ ./simplenagios.py
-    

@@ -1,10 +1,15 @@
 #!/usr/bin/python
+""" SimpleNagios:
+
+This is a nagios readonly* (mostly)
+
+"""
 from flask import Flask
 from flask import render_template
-from flask import request, redirect, url_for
+from flask import request, redirect
 from werkzeug.contrib.cache import SimpleCache
 from functools import wraps
-from flask import Response, session, escape, jsonify
+from flask import session, escape
 
 # Importing things from simplenagios
 import query    # Used to make queries via livestatus.py
@@ -12,40 +17,46 @@ import action   # Used to do actions via livestatus.py
 import settings # Used to read your settings
 
 #------------------------------------------------------------------------------
-cache = SimpleCache()
-app = Flask(__name__)
+AppCache = SimpleCache()
+App = Flask(__name__)
 
 #------------------------------------------------------------------------------
 def cached(timeout=60, key='view/%s'):
-    """ Use this decorator @cached to cache a view. Can be used to to speed up
-    common views. """
-    def decorator(f):
-        @wraps(f)
+    """ 
+    Use this decorator @cached to cache a view. Can be used to to speed up
+    common views.
+    """
+    def decorator(func):
+        """ Wrapping decorator """
+        @wraps(func)
         def decorated_function(*args, **kwargs):
+            """ Grabs the args and kwargs for the function used to build the
+            cache_key for the caching system. """
             cache_key = key % request.path
-            rv = cache.get(cache_key)
-            if rv is not None:
-                return rv
-            rv = f(*args, **kwargs)
-            cache.set(cache_key, rv, timeout=timeout)
-            return rv
+            return_value = AppCache.get(cache_key)
+            if return_value is not None:
+                return return_value
+            return_value = func(*args, **kwargs)
+            AppCache.set(cache_key, return_value, timeout=timeout)
+            return return_value
         return decorated_function
     return decorator
 
 #------------------------------------------------------------------------------
-@app.template_filter('format_td')
-def reverse_filter(td):
+@App.template_filter('format_td')
+def reverse_filter(time_delta):
     """ Convert a timedelta into a min, hours or days """
-    tm = td.total_seconds() / 60
-    if tm < 180:
-        return "%d min" % tm
-    if tm < 2000:
-        return "%d hours" % ( tm /60 )
+    time_in_minutes = time_delta.total_seconds() / 60
+    if time_in_minutes < 180:
+        return "%d min" % time_in_minutes
+    if time_in_minutes < 2000:
+        return "%d hours" % ( time_in_minutes /60 )
 
-    return "%d days" % ( tm /60/ 24 )
+    return "%d days" % ( time_in_minutes /60/ 24 )
+
 #------------------------------------------------------------------------------
-@app.template_filter('host_status')
-def reverse_filter(status):
+@App.template_filter('host_status')
+def tag_host_status(status):
     """ Convert a host_status into an english word. 
     For example:
     'up' is stored as 0. 
@@ -55,9 +66,10 @@ def reverse_filter(status):
     if status == 1:
         return "down"
     return "unknown"
+
 #------------------------------------------------------------------------------
-@app.template_filter('service_status')
-def reverse_filter(status):
+@App.template_filter('service_status')
+def tag_service_status(status):
     """ Convert a service_status into an english word.
     For example:
     'ok' is stored as 0.
@@ -86,7 +98,7 @@ def gather_filters(request):
             continue
 
         if '!' in filter_data:
-            filter_date = filter_data.replace('!','!= ')
+            filter_data = filter_data.replace('!','!= ')
             extra_filters.append("%(filter_column)s %(filter_data)s" % locals())
             continue
 
@@ -103,9 +115,9 @@ def gather_filters(request):
     return extra_filters
 
 #------------------------------------------------------------------------------
-@app.route("/")
-@app.route("/tac/")
-def tac(exter_filter=None):
+@App.route("/")
+@App.route("/tac/")
+def tac():
     """ The 'Tactical Monitoring Overview', this will show an overview of all 
     the services: up, down, warning, error, etc.
     """
@@ -117,8 +129,9 @@ def tac(exter_filter=None):
 
 #------------------------------------------------------------------------------
 @cached
-@app.route("/hosts/")
-def hosts(hostname=None):
+@App.route("/hosts/")
+def hosts():
+    """ From a filter or no filter display a list of hosts. """
     extra_filters = gather_filters(request)
     host_list = query.get_hosts(
     columns='name state last_check last_state_change plugin_output acknowledged scheduled_downtime_depth notifications_enabled max_check_attempts current_attempt',
@@ -128,20 +141,20 @@ def hosts(hostname=None):
     host_list=host_list, host_stats=host_stats )
 
 #------------------------------------------------------------------------------
-@cached
-@app.route("/all_hosts.json")
-def all_hosts_json(hostname=None):
-    extra_filters = gather_filters(request)
-    host_list = query.get_hosts( columns='name', extra_filter=extra_filters)
-    hosts = []
-    for h in host_list:
-        hosts.append(h['name'])
-    return jsonify(hosts=hosts)
+#@cached
+#@app.route("/all_hosts.json")
+#def all_hosts_json(hostname = None):
+#    extra_filters = gather_filters(request)
+#    host_list = query.get_hosts( columns='name', extra_filter=extra_filters)
+#    hosts = []
+#    for h in host_list:
+#        hosts.append(h['name'])
+#    return jsonify(hosts=hosts)
 
 #------------------------------------------------------------------------------
-@app.route("/hosts-search/")
+@App.route("/hosts-search/")
 def hosts_search():
-    #extra_filters = gather_filters(request)
+    """ Take a GET argument of host_name and redirect to a nice url. """
     host_name = request.args.get('host_name', None)
     if not host_name:
         return redirect( "/hosts/" )
@@ -149,28 +162,31 @@ def hosts_search():
 
 #------------------------------------------------------------------------------
 @cached
-@app.route("/comment/")
+@App.route("/comment/")
 def comment():
+    """ List of comments that have been made."""
     extra_filters = gather_filters(request)
     comment_list = query.get_comments(extra_filter=extra_filters)
     return render_template('comment_list.template', comment_list=comment_list )
 
 #------------------------------------------------------------------------------
 @cached
-@app.route("/comment/<comment_id>/")
+@App.route("/comment/<comment_id>/")
 def single_comment(comment_id):
-    service_list = query.get_comment(comment_id)
+    """ Display a comment that matches a comment_id. """
+    comment_list = query.get_comment(comment_id)
     return render_template('comment.template', comment_list=comment_list )
 
 #------------------------------------------------------------------------------
 @cached
-@app.route("/host/<host_name>/")
-@app.route("/host/<host_name>/service/")
-@app.route("/host/<host_name>/services/")
-@app.route("/hosts/<host_name>/")
-@app.route("/hosts/<host_name>/service/")
-@app.route("/hosts/<host_name>/services/")
+@App.route("/host/<host_name>/")
+@App.route("/host/<host_name>/service/")
+@App.route("/host/<host_name>/services/")
+@App.route("/hosts/<host_name>/")
+@App.route("/hosts/<host_name>/service/")
+@App.route("/hosts/<host_name>/services/")
 def host_services(host_name):
+    """ Given a host_name display all of its services. """
     extra_filters = gather_filters(request)
     service_list = query.get_host_services(host_name, 
     columns='host_name description state last_check last_state_change plugin_output acknowledged host_acknowledged max_check_attempts current_attempt',
@@ -182,31 +198,23 @@ def host_services(host_name):
 
 #------------------------------------------------------------------------------
 @cached
-@app.route("/host/<host_name>/detail")
+@App.route("/host/<host_name>/detail")
 def host_detail(host_name):
-    try:
-        host = query.get_host(host_name)[0]
-    except IndexError:
-        return bigsearch()
+    """ Given a hostname, show the extended detail of the host. """
+    host = query.get_host(host_name)[0]
     return render_template('host_detail.template', host=host )
 
 #------------------------------------------------------------------------------
 @cached
-@app.route("/host/<host_name>/graph")
-def host_graph(host_name):
-    host = query.get_host(host_name)[0]
-    return render_template('host_graph.template', host=host )
-
-#------------------------------------------------------------------------------
-@cached
-@app.route("/take_action/",  methods=['GET', 'POST'] )
+@App.route("/take_action/",  methods=['GET', 'POST'] )
 def take_action():
-    print request.environ['HTTP_REFERER']
-    d = request.form.copy()
-    services = d.getlist('services')
-    hosts = d.getlist('hosts')
-    message = d.get('action_message')
-    action_type = d.get('action_type')
+    """ Take a POST and turn it on to an action, that will be used by action.py
+    """
+    request_copy = request.form.copy()
+    services = request_copy.getlist('services')
+    hosts = request_copy.getlist('hosts')
+    message = request_copy.get('action_message')
+    action_type = request_copy.get('action_type')
     if action_type == 'ack':
         action.ack_hosts( hosts, message )
         action.ack_services( services, message )
@@ -215,15 +223,16 @@ def take_action():
 
 
 #------------------------------------------------------------------------------
-@app.route("/host/<host_name>/service/<service_name>/")
+@App.route("/host/<host_name>/service/<service_name>/")
 def service_detail(host_name, service_name):
+    """ Find details of a service for a host and a service_name """
     extra_filters = gather_filters(request)
     extra_filters.append('host_name = %(host_name)s' % locals())
-    cols = [ 'description','host_name','notification_period',
-    'host_plugin_output','action_url','notes_url','state','acknowledged',
-    'last_check','check_type','next_check','last_state_change',
-    'last_notification', 'plugin_output','last_notification',
-    'next_notification','host_num_services_ok' ]
+    #cols = [ 'description','host_name','notification_period',
+    #'host_plugin_output','action_url','notes_url','state','acknowledged',
+    #'last_check','check_type','next_check','last_state_change',
+    #'last_notification', 'plugin_output','last_notification',
+    #next_notification','host_num_services_ok' ]
     service = query.get_services(service_name, columns=None,
     extra_filter=extra_filters)
     service = service[0]
@@ -232,21 +241,24 @@ def service_detail(host_name, service_name):
 
 #------------------------------------------------------------------------------
 @cached
-@app.route("/hostgroup/<hostgroup>/")
+@App.route("/hostgroup/<hostgroup>/")
 def hostgroup_detail(hostgroup):
+    """ Given a hostgroup, display a list of hosts that are in the group. """
     hostgroup = query.get_hostgroup(hostgroup)[0]
     return render_template('hostgroup_detail.template', hostgroup=hostgroup )
 
 #------------------------------------------------------------------------------
 @cached
-@app.route("/service/<service_name>/")
+@App.route("/service/<service_name>/")
 def services(service_name):
     """ list of services that match a service name, this will show the same
     service across a number of servers. """
     extra_filters = gather_filters(request)
+
     service_list = query.get_services(service_name, 
     columns='host_name description state last_check last_state_change plugin_output acknowledged host_acknowledged current_attempt max_check_attempts',
     extra_filter=extra_filters)
+
     service_stats = query.service_stats(
     extra_filter="description = %(service_name)s" % locals())
     return render_template('service_list.template', service_list=service_list,
@@ -254,7 +266,7 @@ def services(service_name):
 
 #------------------------------------------------------------------------------
 @cached
-@app.route("/service/")
+@App.route("/service/")
 def all_services():
     """
     This of every single service that we know about, this is very slow if 
@@ -273,8 +285,8 @@ def all_services():
 #------------------------------------------------------------------------------
 if __name__ == "__main__":
     # Pull the settings from settings.py 
-    app.secret_key = settings.SECRET_KEY
-    app.run(
+    App.secret_key = settings.SECRET_KEY
+    App.run(
          settings.LISTEN_ADDRESS,
          settings.LISTEN_PORT,
          debug = settings.DEBUG
