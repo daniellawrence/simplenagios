@@ -1,0 +1,171 @@
+{% extends "base.template" %}
+{% block jquery %}
+
+var table = $('table');
+
+var th = jQuery('th'),
+         inverse = false;
+            
+th.click(function(){
+  var header = $(this),
+  index = header.index();
+                    
+  header
+  .closest('table')
+  .find('td')
+  .filter(function(){
+    return $(this).index() === index;
+  })
+  //.sort(function(a, b){
+  .sort(function(x, y){
+                        
+    //a = $(a).text();
+    //b = $(b).text();
+    
+    a = $(x).attr('value');
+    b = $(y).attr('value');
+
+    console.log( $(x).text() );
+
+
+                        
+  return (
+     isNaN(a) || isNaN(b) ?
+     a > b : +a > +b
+     ) ?
+     inverse ? -1 : 1 :
+     inverse ? 1 : -1;
+  }, function(){
+     return this.parentNode;
+  });
+  inverse = !inverse;
+});
+            
+
+    $("select").change(function () {
+          $("select option:selected").each(function () {
+                if ( $(this).val() == "actions" ){
+                    $(':checkbox').hide();
+                    $('.hidden_form').hide();
+                }
+                if ( $(this).val() == "ack" ){
+                    $(':checkbox').show();
+                    $('.hidden_form').show();
+                }
+              });
+        })
+        .trigger('change');
+
+     $(".ack").click(function () {
+            $(':checkbox').show();
+            $('.hidden_form').show();
+            $("select").val("ack");
+            $(".ack").hide();
+     })
+
+{% endblock %}
+{% block container %}
+
+    <form action='/take_action/' method='post'>
+    <select name='action_type'  id='action_type_select_box'>
+       <option value='actions'>Actions</option>
+       <option value='ack' >Ack. Services or Hosts</option>
+    </select>
+    <input class='hidden_form' type='text' name='action_message' placeholder='ack all with' />
+    <input class='hidden_form' type='submit' />
+
+    <strong>Service state:</strong>
+
+    <a href='?state=0' title='Show all OK services'>
+    <span class="label label-success">ok {{service_stats.ok}}</span></a>
+
+    <a href='?state=1' title='Show all Warning services'>
+    <span class="label label-warning">warn {{service_stats.warn}}</span><a/>
+
+    <a href='?state=3' title='Show all Unknown services'>
+    <span class="label">unknown {{service_stats.unknown}}</span><a/>
+
+    <a href='?state=2' title='Show all critical services'>
+    <span class="label label-important">crit {{service_stats.error}}</span><a/>
+
+    <a href='?state=4' title='Show all pending services'>
+    <span class="label label-info">pending</span><a/>
+
+    <a href='?' title='show all services'>
+    <span class="label label-inverse">&nbsp;all</span><a/>
+
+{% if service_list|length == 0 %}
+    <h3>No services match the filter</h3>
+{% endif %}
+    <table class="table table-condensed status table-hover" >
+        <tr>
+             <th><a href='/'><i class='icon-arrow-left'></i></a>Host</th>
+             <th>service</th>
+             <th>state</th>
+             <th>last checked</th>
+             <th>duration</th>
+             <th>attempt</th>
+             <th>output</th>
+        </tr>
+
+    {% for service in service_list %}
+        <tr>
+            <td>
+            {% if last_hostname != service.host_name %}
+                 <div style='float: left;'>
+                     <a href='/host/{{service.host_name}}/services/' title='More Details'>
+                     <i class='icon-list'></i>
+                     </a>
+
+            {% if service.host_acknowledged == 0 %}
+                <input type='checkbox' class='hosts_cb' name='hosts' value='{{service.host_name}}' />
+            {% else %}
+                <i class='icon-ok'></i></a>
+            {% endif %}
+            {% if service.host_notifications_enabled  == 0 %}
+                <i class='icon-volume-off'></i>
+            {% endif %}
+                 </div>
+                 <a href='/host/{{service.host_name}}/detail'>{{service.host_name}}</a>
+                 <div style='float: left;'>
+                 {% if service.notes_url %}
+                 <a href='{{row.notes_url}}/' title='notes_url'><i class='icon-file'></i></a>
+                 {% endif %}
+                 {% if service.action_url %}
+                 <a href='{{row.action_url}}/' title='action_url'><i class='icon-gift'></i></a>
+                 {% endif %}
+                 </div>
+          {% endif %}
+         </td>
+             <td>
+                 <a href='/host/{{service.host_name}}/service/{{service.description}}/'>{{service.description}}</a>
+                 <div style='float: left'>
+                    <a href='/service/{{service.description}}/?state=> 0'><i class='icon-list'></i></a>
+                 </div>
+             </td>
+             <td class='state_{{service.state}}'>
+                 <a href='?state={{service.state}}'>{{service.state|service_status}}</a>
+
+	     {% if service.state > 0 %}
+               {% if service.acknowledged %}
+                 <a href='?acknowledged=1' title='This service has been acknoledged, show other services that are also acknowldeged'>
+                     <i class='icon-ok'></i>
+                 </a>
+             {% else %}
+                     <input type='checkbox' class='service_cb' name='services' value='{{service.host_name}};{{service.description}}' />
+                     <a title='acknowledge this as issue'><i class='icon-edit ack'></i></a>
+             {% endif %}
+             {% endif %}
+
+             </td>
+             <td value='{{service.last_check}}'>{{service.last_check_td|format_td }}</td>
+             <td value='{{service.last_state_change}}' >{{service.last_state_change_td|format_td}}</td>
+             <td value='{{service.current_attempt}}' >{{service.current_attempt}} / {{service.max_check_attempts}}</td>
+             <td>{{service.plugin_output|truncate(length=150, killwords=False, end='...')}}</td>
+        </tr>
+    {% set last_hostname = service.host_name %}
+    {% endfor %}
+    </table>
+    </form>
+
+{% endblock %}

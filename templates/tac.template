@@ -1,0 +1,194 @@
+{% extends "base.template" %}
+{% block container %}
+<div class='row'>
+
+    <div class='pull-left'>
+    <strong>Host state:</strong><Br />
+
+    <a href='/hosts/?state=0' title='Show all OK hosts'>
+    <span class="label label-success">ok {{host_stats.ok}}</span></a>
+
+    <a href='/hosts/?state=1' title='Show all Warning hosts'>
+    <span class="label label-warning">warn {{host_stats.warn}}</span></a>
+
+    <a href='/hosts/?state=3' title='Show all Unknown hosts'>
+    <span class="label">unknown {{host_stats.unknown}}</span></a>
+
+    <a href='/hosts/?state=2' title='Show all critical hosts'>
+    <span class="label label-important">crit {{host_stats.error}}</span></a>
+
+    <a href='/hosts/?state=4' title='Show all pending hosts'>
+    <span class="label label-info">pending 0</span></a>
+
+    <a href='/hosts/?state=4' title='Show all hosts'>
+    <span class="label label-inverse">all {{host_stats.total}}</span></a>
+    </div>
+   
+    <div class='pull-right'>
+    <strong>Service state:</strong><Br />
+
+    <a title='Show all OK services'>
+    <span class="label label-success">ok {{service_stats.ok}}</span></a>
+
+    <a href='/service/?state=1' title='Show all Warning services'>
+    <span class="label label-warning">warn {{service_stats.warn}}</span></a>
+
+    <a href='/service/?state=3' title='Show all Unknown services'>
+    <span class="label">unknown {{service_stats.unknown}}</span></a>
+
+    <a href='/service/?state=2' title='Show all critical services'>
+    <span class="label label-important">crit {{service_stats.error}}</span></a>
+
+    <a href='/service/?state=4' title='Show all pending services'>
+    <span class="label label-info">pending 0</span></a>
+
+    <a href='/service/?state=4' title='Show all all service'>
+    <span class="label label-inverse">all {{service_stats.total}}</span></a>
+
+    </div>
+
+</div>
+
+<div class='row'>
+
+    <table class="table-condensed table" >
+        <tr>
+           <th colspan='5'>
+<h3>Tactical Overview</h3>
+<h3>Hosts are {{host_stats.ok_percent|round(2)}}% OK</h3>
+<div class="progress">
+  <div class="bar bar-success" style="width: {{host_stats.ok_percent}}%;"></div>
+  <div class="bar bar-warning" style="width: {{host_stats.warn_percent}}%;"></div>
+  <div class="bar bar-danger" style="width: {{host_stats.error_percent}}%;"></div>
+</div>
+</th>
+        </tr>
+	<tr>
+		<th>State</th>
+		<th>Up</th>
+		<th>Down</th>
+		<th>Unknown</th>
+		<th>Pending</th>
+	</tr>
+	<tr>
+	</tr>
+		<th>
+			Total
+		</th>
+		<td>
+			<a href='/hosts/?state=0'>{{host_stats.ok}}</a>
+		</td>
+		<td>
+			<a href='/hosts/?state=1'>{{host_stats.warn}}</a>
+		</td>
+		<td>
+			<a href='/hosts/?state=2'>{{host_stats.error}}</a>
+		</td>
+		<td>
+			<a href='/hosts/?state=2'>{{host_stats.unknown}}</a>
+		</td>
+	</tr>
+	
+	<tr>
+		<th>
+			Acknowledged
+		</th>
+		<td>
+			<a href='/hosts/?state=0&acknowledged=1'> - </a>
+		</td>
+		<td>
+			<a href='/hosts/?state=1&acknowledged=1'>{{host_stats.warn_ack}}</a>
+		</td>
+		<td>
+			<a href='/hosts/?state=2&acknowledged=1'>{{host_stats.error_ack}}</a>
+		</td>
+		<td>
+			<a href='/hosts/?state=2&acknowledged=1'>{{host_stats.unknown_ack}}</a>
+		</td>
+	</tr>
+	<tr>
+		<th>
+			Not Acknowledged
+		</th>
+		<td>
+			<a href='/hosts/?state=0&acknowledged=0'> - </a>
+		</td>
+		<td>
+			<a href='/hosts/?state=1&acknowledged=0'>{{host_stats.warn_not_ack}}</a>
+		</td>
+		<td>
+			<a href='/hosts/?state=2&acknowledged=0'>{{host_stats.error_not_ack}}</a>
+		</td>
+		<td>
+			<a href='/hosts/?state=2&acknowledged=0'>{{host_stats.unknown_not_ack}}</a>
+		</td>
+
+	</tr>
+    </table>
+
+    <table class="table-condensed table" >
+	<tr>
+		<th colspan=5 >
+
+<h3>Services are {{service_stats.ok_percent|round(2)}}% OK</h3>
+<div class="progress">
+  <div class="bar bar-success" style="width: {{service_stats.ok_percent}}%;"></div>
+  <div class="bar bar-warning" style="width: {{service_stats.warn_percent}}%;"></div>
+  <div class="bar bar-danger" style="width: {{service_stats.error_percent}}%;"></div>
+</div>
+	</tr>
+	<tr>
+		<th>State</th>
+		<th>Ok</th>
+		<th>Warning</th>
+		<th>Error</th>
+		<th>Unknown</th>
+	</tr>
+		<th>
+			Total
+		</th>
+		<td>
+			<a href='/service/?state=0'>{{service_stats.ok}}</a>
+		</td>
+		<td>
+			<a href='/service/?state=1'>{{service_stats.warn}}</a>
+		</td>
+		<td>
+			<a href='/service/?state=2'>{{service_stats.error}}</a>
+		</td>
+		<td>
+			<a href='/service/?state=3'>{{service_stats.unknown}}</a>
+		</td>
+	</tr>
+	<tr>
+		<th>Acknowledged</td>
+		<td>
+			<a href='/service/?state=0&acknowledged=1'> - </a>
+		</td>
+		<td>
+			<a href='/service/?state=1&acknowledged=1'>{{service_stats.warn_ack}}</a>
+		</td>
+		<td>
+			<a href='/service/?state=2&acknowledged=1'>{{service_stats.error_ack}}</a>
+		</td>
+		<td>
+			<a href='/service/?state=3&acknowledged=1'>{{service_stats.unknown_ack}}</a>
+		</td>
+	</tr>
+	<tr>
+		<th>Not Acknowledged</th>
+		<td>
+			<a href='/service/?state=0&acknowledged=0'> - </a>
+		</td>
+		<td>
+			<a href='/service/?state=1&acknowledged=0'>{{service_stats.warn_not_ack}}</a>
+		</td>
+		<td>
+			<a href='/service/?state=2&acknowledged=0'>{{service_stats.error_not_ack}}</a>
+		</td>
+		<td>
+			<a href='/service/?state=3&acknowledged=0'>{{service_stats.unknown_not_ack}}</a>
+		</td>
+    </table>
+</div>
+{% endblock %}

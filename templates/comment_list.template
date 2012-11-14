@@ -1,0 +1,83 @@
+{% extends "base.template" %}
+{% block jquery %}
+    var table = $('table');
+    
+    $('th')
+        .wrapInner('<span title="sort this column"/>')
+        .each(function(){
+            
+            var th = $(this),
+                thIndex = th.index(),
+                inverse = false;
+            
+            th.click(function(){
+                
+                table.find('td').filter(function(){
+                    
+                    return $(this).index() === thIndex;
+                    
+                }).sortElements(function(a, b){
+                    
+                    return $.text([a]) > $.text([b]) ?
+                        inverse ? -1 : 1
+                        : inverse ? 1 : -1;
+                    
+                }, function(){
+                    
+                    // parentNode is the element we want to move
+                    return this.parentNode; 
+                    
+                });
+                
+                inverse = !inverse;
+                    
+            });
+                
+        });
+
+    $("select").change(function () {
+          $("select option:selected").each(function () {
+                if ( $(this).val() == "actions" ){
+                    $(':checkbox').hide();
+                    $('.hidden_form').hide();
+                }
+                if ( $(this).val() == "ack" ){
+                    $(':checkbox').show();
+                    $('.hidden_form').show();
+                }
+              });
+        })
+        .trigger('change');
+
+     $(".ack").click(function () {
+            $(':checkbox').show();
+            $('.hidden_form').show();
+            $("select").val("ack");
+            $(".ack").hide();
+     })
+
+{% endblock %}
+{% block container %}
+
+
+    <table class="table table-condensed" >
+        <tr>
+             <th>Host</th>
+             <th>Service</th>
+             <th>Author</th>
+             <th>Comment</th>
+             <th>Type</th>
+             <th>Time</th>
+        </tr>
+    {% for comment in comment_list %}
+	<tr>
+		<td>{{comment.host_name}}</td>
+		<td>{{comment.service_description}}</td>
+		<td>{{comment.author}}</td>
+		<td>{{comment.comment}}</td>
+		<td>{{comment.entry_type}}</td>
+		<td>{{comment.entry_time_dt}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

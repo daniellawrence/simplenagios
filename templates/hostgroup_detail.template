@@ -1,0 +1,49 @@
+{% extends "base.template" %}
+{% block container %}
+
+
+<div class="page-header">
+  <h1>{{hostgroup.alias}} <small>a hostgroup with {{hostgroup.num_hosts}} host(s).</small></h1>
+</div>
+
+<div class='row'>
+<div class='span5'>
+<table class='table'>
+	<tr>
+		<th></th>
+		<th>Hosts</th>
+	</tr>
+	<tr>
+		<th>Up</th>
+		<td>{{hostgroup.num_hosts_up}}</td>
+	</tr>
+	<tr>
+		<th>Down</th>
+		<td>{{hostgroup.num_hosts_down}}</td>
+	</tr>
+</table>
+</div>
+<div class='span6'>
+<table class='table'>
+	<tr>
+		<th>Host</th>
+		<th>State</th>
+	</tr>
+{% for name,state,hard_state in hostgroup.members_with_state %}
+	<tr>
+		<td>
+			<div style='float: left;'>
+				<a href='/host/{{name}}/services/' title='More Details'><i class='icon-list'></i></a>
+			</div>
+			<font size='2'>
+				<a href='/host/{{name}}/detail'>{{name}}</a>
+			</font>
+		</td>
+		<td>{{state|host_status}}</td>
+	</tr>
+{% endfor %}
+</table>
+</div>
+</div>
+	
+{% endblock %}

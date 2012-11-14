@@ -1,0 +1,77 @@
+<html>
+<head>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css" />
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+      .down {
+        background-color: #FF8A8A;
+      }
+      .unreachable {
+        background-color: #FFDFDF;
+      }
+
+	.unknown        {  background-color: #ffddaa; }
+	.warning        {  background-color: #feffc1; }
+	.critcal,.error  {  background-color: #ffdddd; }
+	.down           {  background-color: #ffdddd; }
+	.unreachable    {  background-color: #ffddaa; }
+	.ok       	{ background-color: #88d066;}
+	.warning  	{ background-color: #ffff00;}
+	.unknown  	{ background-color: #ffbb55;}
+	.critical 	{ background-color: #f88888;}
+	.pending  	{ background-color: #acacac;}
+
+	.state_0       	{ background-color: #88d066;}
+	.state_1  	{ background-color: #ffff00;}
+	.state_2 	{ background-color: #f88888;}
+	.state_3  	{ background-color: #ffbb55;}
+
+	.status		{ font-size: 8pt; }
+
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/">Simple Nagios</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="/tac">TAC</a></li>
+              <li><a  href="/hosts">Hosts</a></li>
+          		<li>
+          		<form class="navbar-form pull-left" method='get' action='/hosts-search/'>
+            		<input type="text" id='host_name' name='host_name' class="span3"
+                          placeholder="Search for a host">
+            		<button type="submit" class="btn">Submit</button>
+          		</form>
+          		</li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+    {% block container %}
+    {% endblock %}
+    </div> <!-- /container -->
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script> 
+<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.sortElements.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.sort.js') }}"></script>
+<script type="text/javascript">
+// Included javascript from templates
+{% block jquery %}
+{% endblock %}
+</script>
+</body>
+</html>

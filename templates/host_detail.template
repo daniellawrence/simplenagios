@@ -1,0 +1,215 @@
+{% extends "base.template" %}
+{% block container %}
+<div class="page-header">
+  <h1>
+  {{host.display_name}}
+  <small>{% if host.alias != host.display_name %}{{host.alias}}{% endif %}</small>
+  <small>, {{host.plugin_output}}.</small>
+  </h1>
+	<strong>Host service overview:</strong>
+
+	<a href='/host/{{host.name}}/services/?state=0' title='Show all OK services'>
+	<span class="label label-success">&nbsp;{{host.num_services_ok}}</span></a>
+
+	<a href='/host/{{host.name}}/services/?state=1' title='Show all Warning services'>
+	<span class="label label-warning">&nbsp;{{host.num_services_warn}}</span><a/>
+
+	<a href='/host/{{host.name}}/services/?state=3' title='Show all Unknown services'>
+	<span class="label">&nbsp;{{host.num_services_unknown}}</span><a/>
+
+	<a href='/host/{{host.name}}/services/?state=2' title='Show all critical services'>
+	<span class="label label-important">&nbsp;{{host.num_services_hard_crit}}</span><a/>
+
+	<a href='/host/{{host.name}}/services/?state=4' title='Show all pending services'>
+	<span class="label label-info">&nbsp;{{host.num_services_pending}}</span><a/>
+
+	<a href='/host/{{host.name}}/services/' title='show all services'>
+	<span class="label label-inverse">&nbsp;{{host.num_services}}</span><a/>
+
+
+<div class='pull-right'>
+        {% if host.action_url %}
+	<a href='{{host.action_url}}'>action_url</a>
+        {% endif %}
+	<a href='{{host.notes_url}}'>notes_url</a>
+</div>
+</div>
+
+{% if host.scheduled_downtime_depth > 0 %}
+<div class="alert alert-info">
+  <button type="button" class="close" data-dismiss="alert">×</button>
+  <h4>Active Downtime!</h4>
+  This host is in currently in a downtime window.
+</div>
+{% endif %}
+
+{% if host.is_flapping > 0 %}
+<div class="alert alert-warning">
+  <button type="button" class="close" data-dismiss="alert">×</button>
+  <h4>Host is Flapping!</h4>
+  This host is in flapping, alerting has been disabled.
+</div>
+{% endif %}
+
+{% if host.acknowledged == 0 %}
+{% if host.state == 2 %}
+<div class="alert alert-error">
+  <button type="button" class="close" data-dismiss="alert">×</button>
+  <h4>Error!</h4>
+  This host is in an errored state and has not been acknowledged!
+    <form action='/take_action/' method='post'>
+    <input name='action_type' type='hidden' value='ack' />
+    <input name='hosts' type='hidden' value='{{host.name}}' />
+    <input type='text' name='action_message' placeholder='Anknowledged {{host.name}}' />
+    <input type='submit' />
+</div>
+{% endif %}
+{% if host.state == 1 %}
+<div class="alert alert-warning">
+  <button type="button" class="close" data-dismiss="alert">×</button>
+  <h4>Warning!</h4>
+  This host is in an warning state and has not been acknowledged!
+    <form action='/take_action/' method='post'>
+    <input name='action_type' type='hidden' value='ack' />
+    <input name='hosts' type='hidden' value='{{host.name}}' />
+    <input type='text' name='action_message' placeholder='Anknowledged {{host.name}}' />
+    <input type='submit' />
+</div>
+{% endif %}
+{% else %}
+<div class="alert alert-info">
+  <button type="button" class="close" data-dismiss="alert">×</button>
+  <h4>{{host.name}} has been acknoledged</h4>
+  This host <em>{{host.name}}</em> has been acknowledged!
+</div>
+{% endif %}
+
+<div class="row-fuild">
+<div class='span6'>
+<h3>Host Overview</h3>
+<table class='table table-bordered table-condensed'>
+	<tr>
+		<th>Host Status</th>
+ 		<td>
+		{% if host.state == 0 %}ok{% endif%}
+                </td>
+	</tr>
+	<tr>
+		<th>Information</th><td>{{host.plugin_output}}</td>
+	</tr>
+	<tr>
+		<th>Last Check</th><td>{{host.last_check_td|format_td}}</td>
+	</tr>
+	<tr>
+		<th>Check Type</th><td>{{host.check_type}}</td>
+	</tr>
+	<tr>
+		<th>Next Check</th><td>{{host.next_check_dt}}</td>
+	</tr>
+	<tr>
+		<th>Last Change</th><td>{{host.last_state_change_td|format_td}}</td>
+	</tr>
+	<tr>
+		<th>Last Notifcation</th><td>{{host.last_notification_td|format_td}}</td>
+	</tr>
+	<tr>
+		<th>Next Notifcation</th><td>{{host.next_notification}}</td>
+	</tr>
+</table>
+</div>
+
+<div class='row'>
+<div class='span5'>
+<h3>Actions</h3>
+<h4>Common Tasks</h4>
+<ul class="nav nav-list">
+  <li><a href="#"><i class="icon-ok"></i> Acknowledge this host</a></li>
+  <li><a href="#"><i class="icon-volume-up"></i> Send custom notification</a></li>
+  <li><a href="#"><i class="icon-repeat"></i> Check all services on this host</a></li>
+</ul>
+<h4>Schedule</h4>
+<ul class="nav nav-list">
+  <li><a href="#"><i class="icon-calendar"></i> Re-schedule the next check of this host</a></li>
+  <li><a href="#"><i class="icon-calendar"></i> Delay next host notification</a></li>
+  <li><a href="#"><i class="icon-time"></i> Schedule downtime for this host</a></li>
+  <li><a href="#"><i class="icon-time"></i> Schedule downtime for all services</a>
+  <li><a href="#"><i class="icon-repeat"></i> Check all services on this host</a></li>
+</ul>
+</div>
+<div class='span5'>
+<h4>Disable</h4>
+<ul class="nav nav-list">
+  <li><a href="#"><i class="icon-remove"></i> Disable Active checks of this host</a></li>
+  <li><a href="#"><i class="icon-remove"></i> Stop accepting passive checks for this host</a></li>
+  <li><a href="#"><i class="icon-remove"></i> Disable notifications for this host</a></li>
+  <li><a href="#"><i class="icon-remove"></i> Disable notifications for all services</a></li>
+  <li><a href="#"><i class="icon-remove"></i> Disable checks of all services on this host</a></li>
+</ul>
+<h4>Enable</h4>
+<ul class="nav nav-list">
+ <!-- <li><a href="#"><i class="icon-ok"></i> Acknowledge this host problem</a></li> -->
+  <li><a href="#"><i class="icon-ok"></i> Enable notifications for all services on this host</a></li>
+  <li><a href="#"><i class="icon-ok"></i> Enable checks of all services on this host</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+
+<div class="container">
+    <h3>Extended Information</h3>
+    <Hr />
+
+<div class='row'>
+<div class='span5'>
+    <h3> {{host.groups|length}} Host Groups </h3>
+    <p>
+    Groups that {{host.name}} is a member of.<Br />
+    clicking a host group will give you a list of hosts that are in that group.
+    <p>
+    {% for host_group in host.groups %}
+         <a href='/hostgroup/{{host_group}}/' title='Show the status of all hosts beloing to {{host_group}}' >{{host_group}}</a>,
+    {% endfor %}
+     </p>
+</div>
+<div class='span5'>
+    <h3> {{host.services|length}} Service Groups</h3>
+    <p>
+    Groups that {{host.name}} is in that makes up its list of services.<Br />
+    Clicking a service group will give you a list services for this service on all host.
+    <p>
+      <p>
+    {% for service_name in host.services %}
+         <a href='/service/{{service_name}}/'>{{service_name}}</a>,
+    {% endfor %}
+     </p>
+</div>
+<div class='span5'>
+    <h3> {{host.comments|length}} Host comments </h3>
+    <p>
+    As {{host.name}} has an event users are likely to make a comment about this.<Br />
+    Below is a list of all comments made about this host.
+    <p>
+	{% if  host.comments_with_info|length > 0 %}
+	<table class='table table-bordered table-condensed'>
+		<tr>
+			<th>id</th>
+			<th>author</th>
+			<th>comment</th>
+		</tr>
+		{% for id,author,comment in host.comments_with_info %}
+			<tr>
+				<td>{{id}}</td>
+				<td>{{author}}</td>
+				<td>{{comment}}</td>
+			</tr>
+		{% endfor %}
+	</table>
+	{% else %}
+		<p>No comments on this host.</p>
+	{% endif %}
+</div>
+</div>
+
+{% endblock %}
