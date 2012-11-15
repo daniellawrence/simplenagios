@@ -3,6 +3,10 @@ simplenagios
 
 Simple Nagios web client - Using bootstrap
 
+Live demo:
+http://simplenagios.dansysadm.com/
+
+Example screenshot:
 ![TAC](https://raw.github.com/daniellawrence/simplenagios/master/screenshots/tac.png "TAC")
 
 Getting Starting
