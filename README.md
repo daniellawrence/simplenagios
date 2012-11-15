@@ -29,3 +29,5 @@ Setup and run simplenagios:
     $ sudo service xinetd restart
     $ pip install -r requirements.txt
     $ ./simplenagios.py
+
+Connect to http://localhost:5000 to see simple nagios.
