@@ -1,0 +1,9 @@
+{% extends "base.template" %}
+{% block container %}
+
+<div class='alert alert-error' >
+    <h3>A {{error_type}} has occured</h3>
+    <p>{{error_message}}</p>
+</div>
+
+{% endblock %}
