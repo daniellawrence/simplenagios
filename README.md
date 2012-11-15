@@ -7,7 +7,11 @@ Live demo:
 http://simplenagios.dansysadm.com/
 
 Example screenshot:
+
 ![TAC](https://raw.github.com/daniellawrence/simplenagios/master/screenshots/tac.png "TAC")
+
+![host_details](https://raw.github.com/daniellawrence/simplenagios/master/screenshots/localhost_host_detail.png "host_details")
+
 
 Getting Starting
 ----------------
