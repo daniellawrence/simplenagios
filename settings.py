@@ -1,8 +1,8 @@
 """ All the settings for simplenagios """
 # Where your nagios is...
-#LIVESTATUS_SOCKET_PATH = "unix:/var/lib/nagios3/rw/live"
+LIVESTATUS_SOCKET_PATH = "unix:/var/lib/nagios3/rw/live"
 #LIVESTATUS_SOCKET_PATH = "tcp:nagios:6557"
-LIVESTATUS_SOCKET_PATH = "tcp:192.168.1.7:6557"
+#LIVESTATUS_SOCKET_PATH = "tcp:192.168.1.7:6557"
 #LIVESTATUS_SOCKET_PATH = "tcp:localhost:6557"
 
 # Flask Web server
