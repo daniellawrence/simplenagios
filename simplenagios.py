@@ -122,8 +122,22 @@ def tac():
     the services: up, down, warning, error, etc.
     """
     extra_filters = gather_filters(request)
-    service_stats = query.service_stats(extra_filter=extra_filters)
-    host_stats = query.hosts_stats(extra_filter=extra_filters)
+    try:
+        service_stats = query.service_stats(extra_filter=extra_filters)
+        host_stats = query.hosts_stats(extra_filter=extra_filters)
+    except query.livestatus.MKLivestatusSocketError as error:
+        error_message = """
+        SimpleNagios received an error trying to connect to the nagios broker.
+        <Br />
+        You might want to check you'r settings.py file and make sure that nagios
+        is currently running as expected.
+        <Br />
+        The error message was:
+        <Br />
+        %(error)s""" % locals()
+        return render_template('error.template', error_message=error_message,
+            error_type="connection error")
+
     return render_template('tac.template', service_stats=service_stats, 
                            host_stats=host_stats )
 

@@ -26,5 +26,6 @@ Setup and run simplenagios:
     $ git clone https://github.com/daniellawrence/simplenagios.git
     $ cd simplenagios
     $ cp xinetd-livestatus /etc/xinetd.d/
+    $ sudo service xinetd restart
     $ pip install -r requirements.txt
     $ ./simplenagios.py
