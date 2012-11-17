@@ -139,7 +139,7 @@ def tac():
             error_type="connection error")
 
     return render_template('tac.template', service_stats=service_stats, 
-                           host_stats=host_stats )
+    host_stats=host_stats )
 
 #------------------------------------------------------------------------------
 @cached
@@ -152,7 +152,7 @@ def hosts():
     extra_filter=extra_filters)
     host_stats = query.hosts_stats(extra_filter=extra_filters)
     return render_template('host_list.template',
-    host_list=host_list, host_stats=host_stats )
+    host_list=host_list, host_stats=host_stats, settings=settings )
 
 #------------------------------------------------------------------------------
 #@cached
@@ -181,7 +181,8 @@ def comment():
     """ List of comments that have been made."""
     extra_filters = gather_filters(request)
     comment_list = query.get_comments(extra_filter=extra_filters)
-    return render_template('comment_list.template', comment_list=comment_list )
+    return render_template('comment_list.template', comment_list=comment_list,
+    settings=settings )
 
 #------------------------------------------------------------------------------
 @cached
@@ -189,7 +190,8 @@ def comment():
 def single_comment(comment_id):
     """ Display a comment that matches a comment_id. """
     comment_list = query.get_comment(comment_id)
-    return render_template('comment.template', comment_list=comment_list )
+    return render_template('comment.template', comment_list=comment_list,
+    settings=settings )
 
 #------------------------------------------------------------------------------
 @cached
@@ -208,7 +210,7 @@ def host_services(host_name):
     service_stats = query.service_stats(
     extra_filter="host_name = %(host_name)s" % locals())
     return render_template('service_list.template', service_list=service_list,
-    service_stats=service_stats )
+    service_stats=service_stats,settings=settings )
 
 #------------------------------------------------------------------------------
 @cached
@@ -216,7 +218,8 @@ def host_services(host_name):
 def host_detail(host_name):
     """ Given a hostname, show the extended detail of the host. """
     host = query.get_host(host_name)[0]
-    return render_template('host_detail.template', host=host )
+    return render_template('host_detail.template', host=host, 
+    settings=settings )
 
 #------------------------------------------------------------------------------
 @cached
@@ -251,7 +254,8 @@ def service_detail(host_name, service_name):
     extra_filter=extra_filters)
     service = service[0]
 
-    return render_template('service_detail.template', service=service )
+    return render_template('service_detail.template', service=service, 
+    settings=settings )
 
 #------------------------------------------------------------------------------
 @cached
@@ -259,7 +263,8 @@ def service_detail(host_name, service_name):
 def hostgroup_detail(hostgroup):
     """ Given a hostgroup, display a list of hosts that are in the group. """
     hostgroup = query.get_hostgroup(hostgroup)[0]
-    return render_template('hostgroup_detail.template', hostgroup=hostgroup )
+    return render_template('hostgroup_detail.template', hostgroup=hostgroup,
+    settings=settings )
 
 #------------------------------------------------------------------------------
 @cached
@@ -276,7 +281,7 @@ def services(service_name):
     service_stats = query.service_stats(
     extra_filter="description = %(service_name)s" % locals())
     return render_template('service_list.template', service_list=service_list,
-    service_stats=service_stats )
+    service_stats=service_stats, settings=settings )
 
 #------------------------------------------------------------------------------
 @cached
@@ -292,7 +297,7 @@ def all_services():
     extra_filter=extra_filters)
     service_stats = query.service_stats(extra_filter=extra_filters)
     return render_template('service_list.template', service_list=service_list,
-    service_stats=service_stats )
+    service_stats=service_stats, settings=settings )
 
 #------------------------------------------------------------------------------
 # If this is running as __main__ thne start up the website

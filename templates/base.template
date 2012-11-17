@@ -1,6 +1,7 @@
 <html>
 <head>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-responsive.min.css') }}" type="text/css" />
     <style>
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
@@ -23,12 +24,15 @@
 	.critical 	{ background-color: #f88888;}
 	.pending  	{ background-color: #acacac;}
 
-	.state_0       	{ background-color: #88d066;}
-	.state_1  	{ background-color: #ffff00;}
-	.state_2 	{ background-color: #f88888;}
-	.state_3  	{ background-color: #ffbb55;}
+	.state_0, .state_up, .state_ok       	{ background-color: #88d066;}
+	.state_1, .state_warn 	{ background-color: #ffff00;}
+	.state_2, .state_down, .state_err  	{ background-color: #f88888;}
+	.state_3, .state_unknown  	{ background-color: #ffbb55;}
 
 	.status		{ font-size: 8pt; }
+  .host_cb,.service_cb  { visibility:hidden;}
+
+  .state_0, .state_1, .state_2, .state_3 { text-align: center; align: center;}
 
     </style>
 </head>

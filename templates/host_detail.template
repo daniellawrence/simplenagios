@@ -57,11 +57,13 @@
   <button type="button" class="close" data-dismiss="alert">×</button>
   <h4>Error!</h4>
   This host is in an errored state and has not been acknowledged!
+  {% if settings.WRITE_MODE %}
     <form action='/take_action/' method='post'>
     <input name='action_type' type='hidden' value='ack' />
     <input name='hosts' type='hidden' value='{{host.name}}' />
     <input type='text' name='action_message' placeholder='Anknowledged {{host.name}}' />
     <input type='submit' />
+  {% endif %}
 </div>
 {% endif %}
 {% if host.state == 1 %}
@@ -69,11 +71,13 @@
   <button type="button" class="close" data-dismiss="alert">×</button>
   <h4>Warning!</h4>
   This host is in an warning state and has not been acknowledged!
+  {% if settings.WRITE_MODE %}
     <form action='/take_action/' method='post'>
     <input name='action_type' type='hidden' value='ack' />
     <input name='hosts' type='hidden' value='{{host.name}}' />
     <input type='text' name='action_message' placeholder='Anknowledged {{host.name}}' />
     <input type='submit' />
+  {% endif %}
 </div>
 {% endif %}
 {% else %}
@@ -118,7 +122,8 @@
 </table>
 </div>
 
-<div class='row'>
+{% if settings.WRITE_MODE %}
+<div class='row' >
 <div class='span5'>
 <h3>Actions</h3>
 <h4>Common Tasks</h4>
@@ -154,12 +159,9 @@
 </div>
 </div>
 </div>
+{% endif %}
 </div>
 
-
-<div class="container">
-    <h3>Extended Information</h3>
-    <Hr />
 
 <div class='row'>
 <div class='span5'>

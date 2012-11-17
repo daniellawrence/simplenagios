@@ -41,7 +41,7 @@ th.click(function(){
   inverse = !inverse;
 });
             
-
+{% if settings.WRITE_MODE %}
     $("select").change(function () {
           $("select option:selected").each(function () {
                 if ( $(this).val() == "actions" ){
@@ -62,10 +62,13 @@ th.click(function(){
             $("select").val("ack");
             $(".ack").hide();
      })
+{% endif %}
 
 {% endblock %}
 {% block container %}
 
+
+{% if settings.WRITE_MODE %}
     <form action='/take_action/' method='post'>
     <select name='action_type'  id='action_type_select_box'>
        <option value='actions'>Actions</option>
@@ -73,6 +76,8 @@ th.click(function(){
     </select>
     <input class='hidden_form' type='text' name='action_message' placeholder='ack all with' />
     <input class='hidden_form' type='submit' />
+
+{% endif %}
 
     <strong>Service state:</strong>
 
@@ -111,14 +116,13 @@ th.click(function(){
     {% for service in service_list %}
         <tr>
             <td>
-            {% if last_hostname != service.host_name %}
                  <div style='float: left;'>
                      <a href='/host/{{service.host_name}}/services/' title='More Details'>
                      <i class='icon-list'></i>
                      </a>
 
             {% if service.host_acknowledged == 0 %}
-                <input type='checkbox' class='hosts_cb' name='hosts' value='{{service.host_name}}' />
+                <input type='checkbox' class='hosts_cb' style='visibility:hidden;' name='hosts' value='{{service.host_name}}' />
             {% else %}
                 <i class='icon-ok'></i></a>
             {% endif %}
@@ -135,7 +139,6 @@ th.click(function(){
                  <a href='{{row.action_url}}/' title='action_url'><i class='icon-gift'></i></a>
                  {% endif %}
                  </div>
-          {% endif %}
          </td>
              <td>
                  <a href='/host/{{service.host_name}}/service/{{service.description}}/'>{{service.description}}</a>
@@ -163,7 +166,6 @@ th.click(function(){
              <td value='{{service.current_attempt}}' >{{service.current_attempt}} / {{service.max_check_attempts}}</td>
              <td>{{service.plugin_output|truncate(length=150, killwords=False, end='...')}}</td>
         </tr>
-    {% set last_hostname = service.host_name %}
     {% endfor %}
     </table>
     </form>

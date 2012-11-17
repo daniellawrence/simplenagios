@@ -38,8 +38,8 @@
 			<font size='2'>
 				<a href='/host/{{name}}/detail'>{{name}}</a>
 			</font>
-		</td>
-		<td>{{state|host_status}}</td>
+		</td >
+		<td class='state_{{state|host_status}}'>{{state|host_status}}</td>
 	</tr>
 {% endfor %}
 </table>

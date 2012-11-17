@@ -13,3 +13,12 @@ DEBUG = True
 # For setting up cookies and session varibles you need to have a secret_key
 # You will want to use a random string here.
 SECRET_KEY = '8b6fd7fc81255b9e51ba1ebb1ef75e9c'
+
+# Write Mode: If WRITE_MODE is enabled (true), then simple nagios is configured
+# To be able to make changes to the nagios instance.
+# If WRITE_MODE is disabled ( False ), then simple nagios is not able to make
+# any change to the nagios or request nagios to do anything other than
+# display results via mk_livestatus
+WRITE_MODE = False
+
+

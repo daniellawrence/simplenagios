@@ -41,11 +41,13 @@
   <button type="button" class="close" data-dismiss="alert">×</button>
   <h4>Error!</h4>
   This service <em>{{service.description}}</em> is in an errored state and has not been acknowledged!
+  {% if settings.WRITE_MODE %}
     <form action='/take_action/' method='post' target='_blank'>
     <input name='action_type' type='hidden' value='ack' />
     <input name='services' type='hidden' value='{{service.host_name}};{{service.description}}' />
     <input type='text' name='action_message' placeholder='Anknowledged {{service.description}}' />
     <input type='submit' />
+  {% endif %}
 </div>
 {% endif %}
 {% if service.state == 1 %}
@@ -53,11 +55,13 @@
   <button type="button" class="close" data-dismiss="alert">×</button>
   <h4>Warning!</h4>
   This host <em>{{service.description}}</em> is in an warning state and has not been acknowledged!
+  {% if settings.WRITE_MODE %}
     <form action='/take_action/' method='post' target='_blank'>
     <input name='action_type' type='hidden' value='ack' />
     <input name='services' type='hidden' value='{{service.host_name}};{{service.description}}' />
     <input type='text' name='action_message' placeholder='Anknowledged {{service.description}}' />
     <input type='submit' />
+  {% endif %}
 </div>
 {% endif %}
 {% else %}
@@ -69,7 +73,7 @@
 {% endif %}
 
 <div class="row-fuild">
-<div class='span10'>
+<div class='span6'>
 <h3>Service Overview</h3>
 <table class='table table-bordered table-condensed well'>
 	<tr>
@@ -92,6 +96,7 @@
 </table>
 </div>
 
+{% if settings.WRITE_MODE %}
 <div class='span8'>
 	<h3>Actions</h3>
 </div>
@@ -160,17 +165,12 @@
   <li><a href="#"><i class="icon-ok"></i> Enable checks of all services on this host</a></li>
 </ul>
 </div>
+{% endif %}
 </div>
-</div>
-
-<div class="container">
-
-	<h3>Extended Information</h3>
-	<Hr />
 
 
 <div class='row'>
-<div class='span7'>
+<div class='span5'>
     <h3> Host Groups </h3>
     <p>
     Groups that {{service.host_name}} is a member of.<Br />
@@ -181,7 +181,7 @@
     {% endfor %}
      </p>
 </div>
-<div class='span7'>
+<div class='span5'>
     <h3>Service Groups</h3>
     <p>
     Groups that {{service.host_name}} is in that makes up its list of services.<Br />
@@ -193,7 +193,7 @@
     {% endfor %}
      </p>
 </div>
-<div class='span7'>
+<div class='span5'>
     <h3> Host comments </h3>
     <p>
     As {{service.host_name}} has an event users are likely to make a comment about this.<Br />

@@ -28,6 +28,7 @@
     <strong>Service state:</strong><Br />
 
     <a title='Show all OK services'>
+    <a href='/service/?state=0' title='Show all Warning services'>
     <span class="label label-success">ok {{service_stats.ok}}</span></a>
 
     <a href='/service/?state=1' title='Show all Warning services'>

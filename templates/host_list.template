@@ -32,6 +32,7 @@ th.click(function(){
   inverse = !inverse;
 });
 
+{% if settings.WRITE_MODE %}
 
 // This is the function that will allow you to ack services from the service list
     $("select").change(function () {
@@ -47,10 +48,14 @@ th.click(function(){
               });
         })
         .trigger('change');
+{% endif %}
+
 
 {% endblock %}
 {% block container %}
 
+
+{% if settings.WRITE_MODE %}
     <form action='/take_action/' method='post'>
     <select name='action_type'  id='action_type_select_box'>
        <option value='actions'>Actions</option>
@@ -58,6 +63,7 @@ th.click(function(){
     </select>
     <input class='hidden_form' type='text' name='action_message' placeholder='ack all with' />
     <input class='hidden_form' type='submit' />
+{% endif %}
 
     <strong>Service state:</strong>
 
@@ -112,7 +118,7 @@ th.click(function(){
                  	<i class='icon-ok'></i>
 			</a>
 		 {% else %}
-			<input type='checkbox' class='hosts_cb' name='hosts' value='{{host.name}}' />
+			<input type='checkbox' class='hosts_cb' style='visibility:hidden;' name='hosts' value='{{host.name}}' />
                  {% endif %}
                  </font>
              </td>
