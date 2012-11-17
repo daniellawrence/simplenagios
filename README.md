@@ -41,3 +41,14 @@ Setup and run simplenagios:
     $ ./simplenagios.py
 
 Connect to http://localhost:5000 to see simple nagios.
+
+settings
+--------
+
+__LIVESTATUS_SOCKET_PATH__
+
+This tells simplenagios where the socket is for mk-livestatus, without this socket simple nagios will not able to do anything.
+
+__WRITE_MODE__
+
+This controls if the simple nagios system is allowed to write back to nagios or will only be a read-only copy.
