@@ -9,7 +9,8 @@ import settings
 
 def query(query, limit = None, columns = None, extra_filter = None, 
           return_type = 'table_assoc', item_type = None):
-    query = build_query(query, limit = limit, columns = columns,
+
+    query = build_query(query, columns = columns,
                          extra_filter = extra_filter)
     
     # Get the current datetime
@@ -60,20 +61,24 @@ def query(query, limit = None, columns = None, extra_filter = None,
 def query_table(lsl_query, limit=None, columns=None, extra_filter=None):
     """ take a query and force it to be returned in a dict ( table ) format.
     """
-    lsl_query = build_query(lsl_query, limit = limit, columns = columns, 
+    lsl_query = build_query(lsl_query, columns = columns, 
                          extra_filter = extra_filter, return_type="table")
     return lsl_query
 
-def query_table_assoc(query, limit=None, columns=None, extra_filter=None):
-    query = build_query(query, limit = limit, columns = columns, 
+def query_table_assoc(lsl_query, columns=None, extra_filter=None):
+    """ take a query and force it to be an assoced table format. """
+    lsl_query = build_query(lsl_query, columns = columns, 
                          extra_filter = extra_filter, return_type="table_assoc")
+    return lsl_query
     
-def build_query(query, limit=None, columns=None, extra_filter=None):
+def build_query(lsl_query, columns=None, extra_filter=None):
+    """ take the complex parts of a query, that have been diveded up into 
+    kwargs and join them all back together in to an lsl_query. """
     if columns:
         if type(columns).__name__ in ('str','unicode'):
-            query += "Columns: %s\n" % columns
+            lsl_query += "Columns: %s\n" % columns
         if type(columns).__name__ in ('list',):
-            query += "Columns: %s\n" % " ".join(columns)
+            lsl_query += "Columns: %s\n" % " ".join(columns)
 
     if extra_filter:
 
@@ -81,17 +86,20 @@ def build_query(query, limit=None, columns=None, extra_filter=None):
             extra_filter = extra_filter.split(',')
 
         if type(extra_filter).__name__ == "list":
-            query += "Filter: " + "\nFilter: ".join( extra_filter )
+            lsl_query += "Filter: " + "\nFilter: ".join( extra_filter )
         else:
-            query += "Filter: %(extra_filter)s\n" % locals()
+            lsl_query += "Filter: %(extra_filter)s\n" % locals()
 
-    return query
+    return lsl_query
 
-def get(query, limit=None, columns=None,extra_filter=None):
-    return query("GET %s\n" % query, limit=limit, columns=columns, 
+def get(lsl_query, limit=None, columns=None, extra_filter=None):
+    """ using the lsl_query to grab a type of objects that match that query.
+    columns and filters can be applied. """
+    return query("GET %s\n" % lsl_query, limit=limit, columns=columns, 
     item_type=query, extra_filter=extra_filter)
 
-def get_hosts(limit=None, columns=None ,extra_filter=None):
+def get_hosts(limit=None, columns=None, extra_filter=None):
+    """ grab a list of hosts that match a columns and extra_filters. """
     return query("GET hosts\n", limit=limit, columns=columns,
     item_type="hosts" , extra_filter=extra_filter)
 
