@@ -2,7 +2,7 @@
 {% block container %}
 <div class="page-header">
   <h1>
-  {{host.display_name}}
+  <a href='/host/{{host.display_name}}'>{{host.display_name}}</a>
   <small>{% if host.alias != host.display_name %}{{host.alias}}{% endif %}</small>
   <small>, {{host.plugin_output}}.</small>
   </h1>

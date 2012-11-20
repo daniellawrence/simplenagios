@@ -1,60 +1,41 @@
 {% extends "base.template" %}
 {% block jquery %}
-    var table = $('table');
+
+var table = $('table');
     
-    $('th')
-        .wrapInner('<span title="sort this column"/>')
-        .each(function(){
+$('th')
+    .wrapInner('<span title="sort this column"/>')
+    .each(function(){
+        
+        var th = $(this),
+            thIndex = th.index(),
+            inverse = false;
+        
+        th.click(function(){
             
-            var th = $(this),
-                thIndex = th.index(),
-                inverse = false;
-            
-            th.click(function(){
+            table.find('td').filter(function(){
                 
-                table.find('td').filter(function(){
-                    
-                    return $(this).index() === thIndex;
-                    
-                }).sortElements(function(a, b){
-                    
-                    return $.text([a]) > $.text([b]) ?
-                        inverse ? -1 : 1
-                        : inverse ? 1 : -1;
-                    
-                }, function(){
-                    
-                    // parentNode is the element we want to move
-                    return this.parentNode; 
-                    
-                });
+                return $(this).index() === thIndex;
                 
-                inverse = !inverse;
-                    
+            }).sortElements(function(a, b){
+                
+                return $.text([a]) > $.text([b]) ?
+                    inverse ? -1 : 1
+                    : inverse ? 1 : -1;
+                
+            }, function(){
+                
+                // parentNode is the element we want to move
+                return this.parentNode; 
+                
             });
+            
+            inverse = !inverse;
                 
         });
+            
+    });
 
-    $("select").change(function () {
-          $("select option:selected").each(function () {
-                if ( $(this).val() == "actions" ){
-                    $(':checkbox').hide();
-                    $('.hidden_form').hide();
-                }
-                if ( $(this).val() == "ack" ){
-                    $(':checkbox').show();
-                    $('.hidden_form').show();
-                }
-              });
-        })
-        .trigger('change');
-
-     $(".ack").click(function () {
-            $(':checkbox').show();
-            $('.hidden_form').show();
-            $("select").val("ack");
-            $(".ack").hide();
-     })
 
 {% endblock %}
 {% block container %}

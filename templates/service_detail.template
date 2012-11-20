@@ -75,7 +75,7 @@
 <div class="row-fuild">
 <div class='span6'>
 <h3>Service Overview</h3>
-<table class='table table-bordered table-condensed well'>
+<table class='table table-bordered table-condensed'>
 	<tr>
 		<th>Service Status</th><td>{{service.state}} ( for {{service.last_state_change_dt}} )</td>
 	</tr><tr>
