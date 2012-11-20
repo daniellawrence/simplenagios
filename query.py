@@ -1,4 +1,4 @@
-#!/usr/bin/python 
+#!/usr/bin/env python 
 """
 A simple library that has common queries into nagios via the mk_livestatus
 module.
@@ -221,22 +221,25 @@ StatsAnd: 2
 	'unknown': int(s[9]),
 	'unknown_not_ack': int(s[10]),
 	'unknown_ack': int(s[11])
-   }
-   # do math after we have some nicer names
+    }
+    # do math after we have some nicer names
     total = j['ok'] + j['warn'] + j['error'] + j['unknown']
+    if total == 0:
+        raise Exception('No services found')
     extra_stats = {
         # total
         'total': total,
-	'ok_percent':  ( j['ok'] / float( total ) * 100 ),
-	'warn_percent':  ( j['warn'] / float( total ) * 100 ),
-	'error_percent':  ( j['error'] / float( total ) * 100 ),
-	'unknown_percent':  ( j['unknown'] / float( total ) * 100 )
+	    'ok_percent':  ( j['ok'] / float( total ) * 100 ),
+	    'warn_percent':  ( j['warn'] / float( total ) * 100 ),
+	    'error_percent':  ( j['error'] / float( total ) * 100 ),
+	    'unknown_percent':  ( j['unknown'] / float( total ) * 100 )
     }
     j.update(extra_stats)
     return j
 
 #------------------------------------------------------------------------------
 def host_service_stats(host_name):
+    """ Gather all the services stats for a certain hosts. """
     return service_stats(extra_filter="host_name = %s" % host_name)
 
 #------------------------------------------------------------------------------
