@@ -9,6 +9,11 @@ import settings
 
 def query(query, limit = None, columns = None, extra_filter = None, 
           return_type = 'table_assoc', item_type = None):
+    """
+    * Take a query in lsl
+    * run the query
+    * return the query in the requested format
+    """
 
     query = build_query(query, columns = columns,
                          extra_filter = extra_filter)
