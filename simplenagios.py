@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """ SimpleNagios:
 
 This is a nagios readonly* (mostly)
@@ -207,8 +207,13 @@ def host_services(host_name):
     service_list = query.get_host_services(host_name, 
     columns='host_name description state last_check last_state_change plugin_output acknowledged host_acknowledged max_check_attempts current_attempt',
     extra_filter=extra_filters)
-    service_stats = query.service_stats(
-    extra_filter="host_name = %(host_name)s" % locals())
+
+    try:
+        service_stats = query.service_stats(
+        extra_filter="host_name = %(host_name)s" % locals())
+    except Exception as error:
+        return redirect("/tac")
+
     return render_template('service_list.template', service_list=service_list,
     service_stats=service_stats,settings=settings )
 
