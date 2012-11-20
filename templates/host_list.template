@@ -69,15 +69,13 @@ th.click(function(){
 
     <a href='?state=0' title='Show all OK hosts'>
     <span class="label label-success">ok {{host_stats.ok}}</span></a>
-
-    <a href='?state=1' title='Show all Warning hosts'>
-    <span class="label label-warning">warn {{host_stats.warn}}</span></a>
+    
+    <a href='?state=1' title='Show all critical hosts'>
+    <span class="label label-important">crit {{host_stats.warn}}</span></a>
 
     <a href='?state=3' title='Show all Unknown hosts'>
     <span class="label">unknown {{host_stats.unknown}}</span></a>
 
-    <a href='?state=2' title='Show all critical hosts'>
-    <span class="label label-important">crit {{host_stats.error}}</span></a>
 
     <a href='?state=4' title='Show all pending hosts'>
     <span class="label label-info">pending</span></a>
@@ -111,8 +109,10 @@ th.click(function(){
                  <a href='/host/{{host.name}}/detail'>{{host.name}}</a>
              </td>
 
-             <td class='state_{{host.state}}'>
+             <td class='state_{{host.state|host_status}}'>
+             <!--
                  <a href='?state={{host.state}}'>{{host.state|host_status}}</a>
+            -->
 		 {% if host.acknowledged %}
                  	<a href='?acknowledged=1'>
                  	<i class='icon-ok'></i>

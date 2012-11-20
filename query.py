@@ -46,7 +46,9 @@ def query(query, limit = None, columns = None, extra_filter = None,
 
                 # If the colname dosn't starts with the name last or _time then
                 # it will not be a timestamp that will need to be converted.
-                if 'last_' not in col and '_time' not in col:
+                if 'last_' not in col \
+                and '_time' not in col \
+                and 'next_' not in col:
                     continue
                 # If the data is not an int(), then dont try and convert it to 
                 # a timestamp( datetime )

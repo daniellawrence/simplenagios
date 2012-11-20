@@ -8,14 +8,17 @@
     <a href='/hosts/?state=0' title='Show all OK hosts'>
     <span class="label label-success">ok {{host_stats.ok}}</span></a>
 
+    <a href='/hosts/?state=1' title='Show all critical hosts'>
+    <span class="label label-important">crit {{host_stats.warn}}</span></a>
+
+<!--
     <a href='/hosts/?state=1' title='Show all Warning hosts'>
     <span class="label label-warning">warn {{host_stats.warn}}</span></a>
+ -->
 
     <a href='/hosts/?state=3' title='Show all Unknown hosts'>
     <span class="label">unknown {{host_stats.unknown}}</span></a>
 
-    <a href='/hosts/?state=2' title='Show all critical hosts'>
-    <span class="label label-important">crit {{host_stats.error}}</span></a>
 
     <a href='/hosts/?state=4' title='Show all pending hosts'>
     <span class="label label-info">pending 0</span></a>
@@ -59,8 +62,8 @@
 <h3>Hosts are {{host_stats.ok_percent|round(2)}}% OK</h3>
 <div class="progress">
   <div class="bar bar-success" style="width: {{host_stats.ok_percent}}%;"></div>
-  <div class="bar bar-warning" style="width: {{host_stats.warn_percent}}%;"></div>
-  <div class="bar bar-danger" style="width: {{host_stats.error_percent}}%;"></div>
+<!--  <div class="bar bar-warning" style="width: {{host_stats.warn_percent}}%;"></div> -->
+  <div class="bar bar-danger" style="width: {{host_stats.warn_percent}}%;"></div>
 </div>
 </th>
         </tr>

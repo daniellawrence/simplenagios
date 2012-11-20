@@ -37,36 +37,36 @@
     </style>
 </head>
 <body>
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="/">Simple Nagios</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li class="active"><a href="/tac">TAC</a></li>
-              <li><a  href="/hosts">Hosts</a></li>
-          		<li>
-          		<form class="navbar-form pull-left" method='get' action='/hosts-search/'>
-            		<input type="text" id='host_name' name='host_name' class="span3"
-                          placeholder="Search for a host">
-            		<button type="submit" class="btn">Submit</button>
-          		</form>
-          		</li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="/">Simple Nagios</a>
+        <div class="nav-collapse collapse">
+          <ul class="nav">
+            <li class="active"><a href="/tac">TAC</a></li>
+            <li><a  href="/hosts">Hosts</a></li>
+        		<li>
+        		<form class="navbar-form pull-left" method='get' action='/hosts-search/'>
+          		<input type="text" id='host_name' name='host_name' class="span3"
+                        placeholder="Search for a host">
+          		<button type="submit" class="btn">Submit</button>
+        		</form>
+        		</li>
+          </ul>
+        </div><!--/.nav-collapse -->
       </div>
     </div>
+  </div>
 
-    <div class="container">
-    {% block container %}
-    {% endblock %}
-    </div> <!-- /container -->
+  <div class="container"  >
+  {% block container %}
+  {% endblock %}
+  </div> <!-- /container -->
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script> 
 <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>

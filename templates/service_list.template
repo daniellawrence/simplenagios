@@ -132,12 +132,15 @@ th.click(function(){
                  </div>
                  <a href='/host/{{service.host_name}}/detail'>{{service.host_name}}</a>
                  <div style='float: left;'>
+
                  {% if service.notes_url %}
                  <a href='{{row.notes_url}}/' title='notes_url'><i class='icon-file'></i></a>
                  {% endif %}
+
                  {% if service.action_url %}
                  <a href='{{row.action_url}}/' title='action_url'><i class='icon-gift'></i></a>
                  {% endif %}
+                 
                  </div>
          </td>
              <td>
@@ -147,18 +150,22 @@ th.click(function(){
                  </div>
              </td>
              <td class='state_{{service.state}}'>
-                 <a href='?state={{service.state}}'>{{service.state|service_status}}</a>
+            <!--
+                 <a href='?state={{service.state}}'>
+                 {{service.state|service_status}}
+                 </a>
+            -->
 
-	     {% if service.state > 0 %}
+	        {% if service.state > 0 %}
                {% if service.acknowledged %}
                  <a href='?acknowledged=1' title='This service has been acknoledged, show other services that are also acknowldeged'>
                      <i class='icon-ok'></i>
                  </a>
-             {% else %}
+                {% else %}
                      <input type='checkbox' class='service_cb' name='services' value='{{service.host_name}};{{service.description}}' />
                      <a title='acknowledge this as issue'><i class='icon-edit ack'></i></a>
-             {% endif %}
-             {% endif %}
+                {% endif %}
+            {% endif %}
 
              </td>
              <td value='{{service.last_check}}'>{{service.last_check_td|format_td }}</td>

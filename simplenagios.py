@@ -85,10 +85,11 @@ def tag_service_status(status):
 #------------------------------------------------------------------------------
 def gather_filters(request):
     """ Generic filter processer to be used with query """
-    allowed_filters = ('state','acknowledged','plugin_output', 'groups')
+    request_args = request.args
+    allowed_filters = ('state', 'acknowledged', 'plugin_output', 'groups')
     extra_filters = []
     for filter_column in allowed_filters:
-        filter_data = request.args.get(filter_column, None)
+        filter_data = request_args.get(filter_column, None)
 
         if not filter_data:
             continue
@@ -136,7 +137,7 @@ def tac():
         <Br />
         %(error)s""" % locals()
         return render_template('error.template', error_message=error_message,
-            error_type="connection error")
+            error_tepe="connection error")
 
     return render_template('tac.template', service_stats=service_stats, 
     host_stats=host_stats )
@@ -144,7 +145,7 @@ def tac():
 #------------------------------------------------------------------------------
 @cached
 @App.route("/hosts/")
-def hosts():
+def show_hosts():
     """ From a filter or no filter display a list of hosts. """
     extra_filters = gather_filters(request)
     host_list = query.get_hosts(
@@ -198,9 +199,6 @@ def single_comment(comment_id):
 @App.route("/host/<host_name>/")
 @App.route("/host/<host_name>/service/")
 @App.route("/host/<host_name>/services/")
-@App.route("/hosts/<host_name>/")
-@App.route("/hosts/<host_name>/service/")
-@App.route("/hosts/<host_name>/services/")
 def host_services(host_name):
     """ Given a host_name display all of its services. """
     extra_filters = gather_filters(request)
@@ -222,12 +220,27 @@ def host_services(host_name):
 @App.route("/host/<host_name>/detail")
 def host_detail(host_name):
     """ Given a hostname, show the extended detail of the host. """
-    host = query.get_host(host_name)[0]
+
+    # Grab a single host from the query.get_host()
+    results = query.get_host(host_name)
+
+    # If we have got no results then fail to the tac
+    if len(results) == 0:
+        return tac()
+
+    # If we have more than 1 result, then show a list of services not a single
+    # host.
+    if len(results) > 1:
+        return redirect( "/host/%(host_name)s/services/" % locals() )
+
+    # Grab the only result into host
+    host = results[0]
+
+    # Return the results
     return render_template('host_detail.template', host=host, 
     settings=settings )
 
 #------------------------------------------------------------------------------
-@cached
 @App.route("/take_action/",  methods=['GET', 'POST'] )
 def take_action():
     """ Take a POST and turn it on to an action, that will be used by action.py
@@ -237,11 +250,36 @@ def take_action():
     hosts = request_copy.getlist('hosts')
     message = request_copy.get('action_message')
     action_type = request_copy.get('action_type')
+
     if action_type == 'ack':
         action.ack_hosts( hosts, message )
         action.ack_services( services, message )
 
     return redirect( request.environ['HTTP_REFERER'] )
+
+#------------------------------------------------------------------------------
+@App.route("/host/<host_name>/service/<service_name>/schedule_recheck")
+def schedule_recheck_service(host_name, service_name):
+    """ Given a host_name and service_name schedule a recheck of the sevice.
+    """
+    action.schedule_service_check(host_name, service_name)
+    return redirect("/host/%(host_name)s/service/%(service_name)s/" % locals() )
+
+
+#------------------------------------------------------------------------------
+@App.route("/host/<host_name>/schedule_recheck")
+def schedule_recheck_host(host_name):
+    """ Given a host_name and service_name schedule a recheck of the sevice.
+    """
+    action.schedule_host_check(host_name)
+    return redirect("/host/%(host_name)s/detail" % locals() )
+
+@App.route("/host/<host_name>/schedule_recheck")
+def schedule_recheck_host_services(host_name):
+    """ Given a host_name schedule a recheck of all of the services.
+    """
+    action.schedule_service_check(host_name, service_name)
+    return redirect("/host/%(host_name)s/service/" % locals() )
 
 
 #------------------------------------------------------------------------------
@@ -274,7 +312,7 @@ def hostgroup_detail(hostgroup):
 #------------------------------------------------------------------------------
 @cached
 @App.route("/service/<service_name>/")
-def services(service_name):
+def show_services(service_name):
     """ list of services that match a service name, this will show the same
     service across a number of servers. """
     extra_filters = gather_filters(request)

@@ -81,7 +81,8 @@
 	</tr><tr>
 		<th>Information</th><td>{{service.plugin_output}}</td>
 	</tr><tr>
-		<th>Last Check</th><td>{{service.last_check_dt}}</td>
+		<th>Last Check</th>
+    <td><a href="schedule_recheck"><i class='icon-repeat'></i>{{service.last_check_td|format_td}}</a></td>
 	</tr><tr>
 		<th>Check Type</th><td>{{service.check_type}}</td>
 	</tr><tr>
@@ -97,47 +98,20 @@
 </div>
 
 {% if settings.WRITE_MODE %}
-<div class='span8'>
-	<h3>Actions</h3>
-</div>
+<!-- 
+<div class='span5'>
+<h4>Common Tasks</h4>
 
-<!--
-<div class='span4'>
 <ul class="nav nav-list">
-  <li><a href="#"><i class="icon-remove"></i> Disable Active checks of this service</a></li>
-  <li><a href="#"><i class="icon-calendar"></i> Re-schedule the next check of this service</a></li>
-
-  <li><a href="#"><i class="icon-question-sign"></i> Submit passive check result for this service</a></li>
-  <li><a href="#"><i class="icon-remove"></i> Stop accepting passive checks for this service</a></li>
-
-  <li><a href="#"><i class="icon-remove"></i> Stop obsessing over this service</a></li>
-
-  <li><a href="#"><i class="icon-ok"></i> Acknowledge this service problem</a></li>
-
-  <li><a href="#"><i class="icon-remove"></i> Disable notifications for this service</a></li>
+  <li><a href="schedule_recheck"><i class="icon-repeat"></i> Schedule a check of this service</a></li>
+  <li><a href=""><i class="icon-ok"></i> Acknowledge this service problem</a></li>
   <li><a href="#"><i class="icon-volume-up"></i> Send custom service notification</a></li>
-  <li><a href="#"><i class="icon-calendar"></i> Delay next service notification</a></li>
 
-  <li><a href="#"><i class="icon-time"></i> Schedule downtime for this service</a></li>
-  <li><a href="#"><i class="icon-time"></i> Schedule downtime for all services on this service</a>
 
-  <li><a href="#"><i class="icon-remove"></i> Disable notifications for all services on this service</a></li>
-  <li><a href="#"><i class="icon-ok"></i> Enable notifications for all services on this service</a></li>
-
-  <li><a href="#"><i class="icon-repeat"></i> Schedule a check of all services on this service</a></li>
-  <li><a href="#"><i class="icon-remove"></i> Disable checks of all services on this service</a></li>
-  <li><a href="#"><i class="icon-remove"></i> Disable flap detection for this service</a></li>
-  <li><a href="#"><i class="icon-ok"></i> Enable checks of all services on this service</a></li>
 </ul>
 </div>
 -->
-<div class='span5'>
-<h4>Common Tasks</h4>
-<ul class="nav nav-list">
-  <li><a href="#"><i class="icon-ok"></i> Acknowledge this service problem</a></li>
-  <li><a href="#"><i class="icon-volume-up"></i> Send custom service notification</a></li>
-  <li><a href="#"><i class="icon-repeat"></i> Schedule a check of all services on this service</a></li>
-</ul>
+<!--
 <h4>Schedule</h4>
 <ul class="nav nav-list">
   <li><a href="#"><i class="icon-calendar"></i> Re-schedule the next check of this service</a></li>
@@ -146,25 +120,28 @@
   <li><a href="#"><i class="icon-time"></i> Schedule downtime for all services on this service</a>
   <li><a href="#"><i class="icon-repeat"></i> Schedule a check of all services on this service</a></li>
 </ul>
-</div>
+-->
+<!--
 <div class='span5'>
+
+
+
 <h4>Disable</h4>
 <ul class="nav nav-list">
   <li><a href="#"><i class="icon-remove"></i> Disable Active checks of this service</a></li>
   <li><a href="#"><i class="icon-remove"></i> Stop accepting passive checks for this service</a></li>
   <li><a href="#"><i class="icon-remove"></i> Disable notifications for this service</a></li>
-  <!--
-   <li><a href="#"><i class="icon-remove"></i> Disable flap detection for this service</a></li>
+  <li><a href="#"><i class="icon-remove"></i> Disable flap detection for this service</a></li>
   <li><a href="#"><i class="icon-remove"></i> Stop obsessing over this host</a></li>
-  -->
 </ul>
 <h4>Enable</h4>
 <ul class="nav nav-list">
- <!-- <li><a href="#"><i class="icon-ok"></i> Acknowledge this host problem</a></li> -->
   <li><a href="#"><i class="icon-ok"></i> Enable notifications for all services on this host</a></li>
   <li><a href="#"><i class="icon-ok"></i> Enable checks of all services on this host</a></li>
 </ul>
 </div>
+
+ -->
 {% endif %}
 </div>
 

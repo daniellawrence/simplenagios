@@ -19,4 +19,4 @@ SECRET_KEY = '8b6fd7fc81255b9e51ba1ebb1ef75e9c'
 # If WRITE_MODE is disabled ( False ), then simple nagios is not able to make
 # any change to the nagios or request nagios to do anything other than
 # display results via mk_livestatus
-WRITE_MODE = False
+WRITE_MODE = True

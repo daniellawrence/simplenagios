@@ -41,6 +41,31 @@ def ack_services(service_list, message):
     for service in service_list:
         command( cmd_t % locals() )
 
+def schedule_host_check(host_name):
+    """ Helper Function: schedule check of a host.
+    """
+    execution_time = int(time.time())
+    cmd = "SCHEDULE_FORCED_HOST_CHECK;%(host_name)s;%(execution_time)s\n" \
+    % locals()
+    command( cmd )
+
+def schedule_host_services_check(host_name):
+    """ Helper Function: schedule services check for all services on a single 
+    host.
+    """
+    execution_time = int(time.time())
+    cmd = "SCHEDULE_FORCED_HOST_SVC_CHECKS;%(host_name)s;%(execution_time)s\n" \
+    % locals()
+    command( cmd )
+
+def schedule_service_check(host_name, service_name):
+    """ Helper Function: schedule service check for a single server on a single
+    host.
+    """
+    execution_time = int(time.time())
+    cmd = "SCHEDULE_FORCED_SVC_CHECK;%(host_name)s;%(service_name)s;%(execution_time)s\n" \
+    % locals()
+    command( cmd )
 
 #-------------------------------------------------------------------------------
 if __name__ == "__main__":

@@ -52,30 +52,16 @@
 {% endif %}
 
 {% if host.acknowledged == 0 %}
-{% if host.state == 2 %}
+{% if host.state == 1 %}
 <div class="alert alert-error">
   <button type="button" class="close" data-dismiss="alert">×</button>
   <h4>Error!</h4>
-  This host is in an errored state and has not been acknowledged!
+  This host is in <strong>down</strong> and has not been acknowledged!
   {% if settings.WRITE_MODE %}
     <form action='/take_action/' method='post'>
     <input name='action_type' type='hidden' value='ack' />
     <input name='hosts' type='hidden' value='{{host.name}}' />
-    <input type='text' name='action_message' placeholder='Anknowledged {{host.name}}' />
-    <input type='submit' />
-  {% endif %}
-</div>
-{% endif %}
-{% if host.state == 1 %}
-<div class="alert alert-warning">
-  <button type="button" class="close" data-dismiss="alert">×</button>
-  <h4>Warning!</h4>
-  This host is in an warning state and has not been acknowledged!
-  {% if settings.WRITE_MODE %}
-    <form action='/take_action/' method='post'>
-    <input name='action_type' type='hidden' value='ack' />
-    <input name='hosts' type='hidden' value='{{host.name}}' />
-    <input type='text' name='action_message' placeholder='Anknowledged {{host.name}}' />
+    <input type='text' name='action_message' style='width: 300px;height: 30px' placeholder='Anknowledged {{host.name}} is down' />
     <input type='submit' />
   {% endif %}
 </div>
@@ -95,14 +81,15 @@
 	<tr>
 		<th>Host Status</th>
  		<td>
-		{% if host.state == 0 %}ok{% endif%}
-                </td>
+		{{host.state|host_status}}
+     </td>
 	</tr>
 	<tr>
 		<th>Information</th><td>{{host.plugin_output}}</td>
 	</tr>
 	<tr>
-		<th>Last Check</th><td>{{host.last_check_td|format_td}}</td>
+		<th>Last Check</th>
+    <td><a href='schedule_recheck'>{{host.last_check_td|format_td}}</a></td>
 	</tr>
 	<tr>
 		<th>Check Type</th><td>{{host.check_type}}</td>
@@ -117,12 +104,13 @@
 		<th>Last Notifcation</th><td>{{host.last_notification_td|format_td}}</td>
 	</tr>
 	<tr>
-		<th>Next Notifcation</th><td>{{host.next_notification}}</td>
+		<th>Next Notifcation</th><td>{{host.next_notification_td|format_td}}</td>
 	</tr>
 </table>
 </div>
 
 {% if settings.WRITE_MODE %}
+<!--
 <div class='row' >
 <div class='span5'>
 <h3>Actions</h3>
@@ -152,13 +140,14 @@
 </ul>
 <h4>Enable</h4>
 <ul class="nav nav-list">
- <!-- <li><a href="#"><i class="icon-ok"></i> Acknowledge this host problem</a></li> -->
+  <li><a href="#"><i class="icon-ok"></i> Acknowledge this host problem</a></li> 
   <li><a href="#"><i class="icon-ok"></i> Enable notifications for all services on this host</a></li>
   <li><a href="#"><i class="icon-ok"></i> Enable checks of all services on this host</a></li>
 </ul>
 </div>
 </div>
 </div>
+-->
 {% endif %}
 </div>
 
