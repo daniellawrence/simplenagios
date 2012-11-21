@@ -106,7 +106,7 @@ th.click(function(){
 				<i class='icon-volume-off'></i>
 			     {% endif %}
                  </div>
-                 <a href='/host/{{host.name}}/detail'>{{host.name}}</a>
+                 <a href='/host/{{host.name}}'>{{host.name}}</a>
              </td>
 
              <td class='state_{{host.state|host_status}}'>

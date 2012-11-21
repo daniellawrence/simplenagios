@@ -130,7 +130,7 @@ th.click(function(){
                 <i class='icon-volume-off'></i>
             {% endif %}
                  </div>
-                 <a href='/host/{{service.host_name}}/detail'>{{service.host_name}}</a>
+                 <a href='/host/{{service.host_name}}/'>{{service.host_name}}</a>
                  <div style='float: left;'>
 
                  {% if service.notes_url %}

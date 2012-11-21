@@ -35,44 +35,36 @@
 </div>
 </div>
 
-{% if host.scheduled_downtime_depth > 0 %}
-<div class="alert alert-info">
-  <button type="button" class="close" data-dismiss="alert">×</button>
-  <h4>Active Downtime!</h4>
-  This host is in currently in a downtime window.
-</div>
-{% endif %}
+<script>
+$(function() {
 
-{% if host.is_flapping > 0 %}
-<div class="alert alert-warning">
-  <button type="button" class="close" data-dismiss="alert">×</button>
-  <h4>Host is Flapping!</h4>
-  This host is in flapping, alerting has been disabled.
-</div>
-{% endif %}
-
-{% if host.acknowledged == 0 %}
-{% if host.state == 1 %}
-<div class="alert alert-error">
-  <button type="button" class="close" data-dismiss="alert">×</button>
-  <h4>Error!</h4>
-  This host is in <strong>down</strong> and has not been acknowledged!
-  {% if settings.WRITE_MODE %}
-    <form action='/take_action/' method='post'>
-    <input name='action_type' type='hidden' value='ack' />
-    <input name='hosts' type='hidden' value='{{host.name}}' />
-    <input type='text' name='action_message' style='width: 300px;height: 30px' placeholder='Anknowledged {{host.name}} is down' />
-    <input type='submit' />
+  {% if host.scheduled_downtime_depth > 0 %}
+    show_message("{{host.name}} is in currently in a downtime window, alerting has been disabled.");
   {% endif %}
-</div>
-{% endif %}
-{% else %}
-<div class="alert alert-info">
-  <button type="button" class="close" data-dismiss="alert">×</button>
-  <h4>{{host.name}} has been acknoledged</h4>
-  This host <em>{{host.name}}</em> has been acknowledged!
-</div>
-{% endif %}
+
+  {% if host.is_flapping > 0 %}
+    show_message("{{host.name}} is in flapping, alerting has been disabled.", "error");
+  {% endif %}
+
+  {% if host.acknowledged == 0 and host.state == 1 %}
+  // Host is down and not acknowledged
+  show_message("" +
+  "Host {{host.name}} is in <strong>down</strong> and has not been acknowledged!" +
+  {% if settings.WRITE_MODE %}
+    "<form id='form_acknowledge' action='acknowledge' method='post'>" +
+    "<input name='action_type' type='hidden' value='ack' />" +
+    "<input name='hosts' type='hidden' value='{{host.name}}' />" +
+    "<input type='text' name='action_message' style='width: 300px;height: 30px' placeholder='Anknowledged that {{host.name}} is down' />" +
+    "<input type='submit' onclick='$(this).parent().hide();' />" +
+    "</form>" +
+  {% endif %}
+  "","error");
+  {% else %}
+  // Host is Down, however it has been acknowledged
+  show_message("This host <em>{{host.name}}</em> has been acknowledged!");
+  {% endif %}
+});
+</script>
 
 <div class="row-fuild">
 <div class='span6'>
@@ -89,10 +81,7 @@
 	</tr>
 	<tr>
 		<th>Last Check</th>
-    <td><a href='schedule_recheck'>{{host.last_check_td|format_td}}</a></td>
-	</tr>
-	<tr>
-		<th>Check Type</th><td>{{host.check_type}}</td>
+    <td><a class='api_action' name="schedule_recheck" >{{host.last_check_td|format_td}} <i class='icon-repeat'></i></a></td>
 	</tr>
 	<tr>
 		<th>Next Check</th><td>{{host.next_check_dt}}</td>
@@ -203,4 +192,19 @@
 </div>
 </div>
 
+{% endblock %}
+
+{% block jquery %}
+
+ $("#form_acknowledge").submit(function(event) {
+    event.preventDefault(); 
+
+    $.post( url, { s: term },
+      function( data ) {
+          var content = $( data ).find( '#content' );
+          $( "#result" ).empty().append( content );
+      }
+    );
+    
+ });
 {% endblock %}
