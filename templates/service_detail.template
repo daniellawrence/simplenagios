@@ -21,10 +21,10 @@
 	<a href='/host/{{service.host_name}}/services/?state=2'>
 	<span class="label label-important">&nbsp;{{service.host_num_services_hard_crit}}</span><a/>
 
-	<a href='/host/{{service.name}}/services/?state=4'>
+	<a href='/host/{{service.host_name}}/services/?state=4'>
 	<span class="label label-info">&nbsp;{{service.host_num_services_pending}}</span><a/>
 
-	<a href='/host/{{service.name}}/services/'>
+	<a href='/host/{{service.host_name}}/services/'>
 	<span class="label label-inverse">&nbsp;{{service.host_num_services}}</span><a/>
 
 <div class='pull-right'>
@@ -77,22 +77,20 @@
 <h3>Service Overview</h3>
 <table class='table table-bordered table-condensed'>
 	<tr>
-		<th>Service Status</th><td>{{service.state}} ( for {{service.last_state_change_dt}} )</td>
+		<th>Service Status</th><td>{{service.state|service_status}}</td>
 	</tr><tr>
 		<th>Information</th><td>{{service.plugin_output}}</td>
 	</tr><tr>
 		<th>Last Check</th>
     <td><a href="schedule_recheck"><i class='icon-repeat'></i>{{service.last_check_td|format_td}}</a></td>
 	</tr><tr>
-		<th>Check Type</th><td>{{service.check_type}}</td>
+		<th>Next Check</th><td>{{service.next_check_td|format_td}}</td>
 	</tr><tr>
-		<th>Next Check</th><td>{{service.next_check_dt}}</td>
+		<th>Last Change</th><td>{{service.last_state_change_td|format_td}}</td>
 	</tr><tr>
-		<th>Last Change</th><td>{{service.last_state_change_dt}}</td>
+		<th>Last Notifcation</th><td>{{service.last_notification_td|format_td}}</td>
 	</tr><tr>
-		<th>Last Notifcation</th><td>{{service.last_notification}}</td>
-	</tr><tr>
-		<th>Next Notifcation</th><td>{{service.next_notification}}</td>
+		<th>Next Notifcation</th><td>{{service.next_notification_td|format_td}}</td>
 	</tr>
 </table>
 </div>
