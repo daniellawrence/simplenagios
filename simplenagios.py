@@ -272,14 +272,16 @@ def schedule_recheck_host(host_name):
     """ Given a host_name and service_name schedule a recheck of the sevice.
     """
     action.schedule_host_check(host_name)
-    return jsonify({'rc':200})
+    return jsonify( {'host_name': host_name,
+        'message': 'Check for host has been scheduled for a recheck as soon as possible'})
 
 @App.route("/host/<host_name>/schedule_recheck")
 def schedule_recheck_host_services(host_name):
     """ Given a host_name schedule a recheck of all of the services.
     """
     action.schedule_service_check(host_name, service_name)
-    return jsonify({'rc':200})
+    return jsonify( {'host_name': host_name,
+        'message': 'All services on this host have been scheduled for a recheck as soon as possible'})
 
 
 #------------------------------------------------------------------------------
