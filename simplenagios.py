@@ -156,17 +156,6 @@ def show_hosts():
     host_list=host_list, host_stats=host_stats, settings=settings )
 
 #------------------------------------------------------------------------------
-#@cached
-#@app.route("/all_hosts.json")
-#def all_hosts_json(hostname = None):
-#    extra_filters = gather_filters(request)
-#    host_list = query.get_hosts( columns='name', extra_filter=extra_filters)
-#    hosts = []
-#    for h in host_list:
-#        hosts.append(h['name'])
-#    return jsonify(hosts=hosts)
-
-#------------------------------------------------------------------------------
 @App.route("/hosts-search/")
 def hosts_search():
     """ Take a GET argument of host_name and redirect to a nice url. """
