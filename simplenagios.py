@@ -272,7 +272,17 @@ def schedule_recheck_host_services(host_name):
     return jsonify( {'host_name': host_name,
         'message': 'All services on host %(host_name)s have been scheduled for a recheck as soon as possible' % locals()})
 
+#------------------------------------------------------------------------------
+@App.route("/host/<host_name>/acknowledge", methods=['POST'])
+def acknowledge_host(host_name):
+    """ Given a host_name schedule a recheck of all of the services.
+    """
+    request_copy = request.form.copy()
+    message = request_copy.get('action_message')
 
+    action.ack_host(host_name, message)
+    return jsonify( {'host_name': host_name, 'ack_message': message,
+        'message': 'The %(host_name)s has been acknowledged' % locals()})
 #------------------------------------------------------------------------------
 @App.route("/host/<host_name>/service/<service_name>/")
 def service_detail(host_name, service_name):
@@ -290,6 +300,8 @@ def service_detail(host_name, service_name):
 
     return render_template('service_detail.template', service=service, 
     settings=settings )
+
+
 
 #------------------------------------------------------------------------------
 @cached
