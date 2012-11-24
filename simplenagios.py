@@ -174,6 +174,13 @@ def comment():
     return render_template('comment_list.template', comment_list=comment_list,
     settings=settings )
 
+@App.route("/comment/<int:comment_id>/delete")
+def delete_comment(comment_id):
+    """ delete a comment """
+    action.delete_comment(comment_id)
+    return jsonify( {'comment_id': comment_id,
+        'message': 'deleted comment'} )
+
 #------------------------------------------------------------------------------
 @cached
 @App.route("/comment/<comment_id>/")
@@ -272,6 +279,7 @@ def schedule_recheck_host_services(host_name):
     return jsonify( {'host_name': host_name,
         'message': 'All services on host %(host_name)s have been scheduled for a recheck as soon as possible' % locals()})
 
+
 #------------------------------------------------------------------------------
 @App.route("/host/<host_name>/acknowledge", methods=['POST'])
 def acknowledge_host(host_name):
@@ -283,6 +291,16 @@ def acknowledge_host(host_name):
     action.ack_host(host_name, message)
     return jsonify( {'host_name': host_name, 'ack_message': message,
         'message': 'The %(host_name)s has been acknowledged' % locals()})
+
+#------------------------------------------------------------------------------
+@App.route("/host/<host_name>/remove_host_acknowledgement")
+def remove_host_acknowledgement(host_name):
+    """ Given a host_name remove_host_acknowledgement
+    """
+    action.remove_host_acknowledgement(host_name)
+    return jsonify( {'host_name': host_name, 
+        'message': 'The %(host_name)s has had its acknowledgement removed.' % locals()})
+
 #------------------------------------------------------------------------------
 @App.route("/host/<host_name>/service/<service_name>/")
 def service_detail(host_name, service_name):

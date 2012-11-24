@@ -67,6 +67,18 @@ def schedule_service_check(host_name, service_name):
     % locals()
     command( cmd )
 
+def delete_comment(comment_id):
+    """ Helper_Function: delete a comment based on the comment id.
+    """
+    cmd = "DEL_HOST_COMMENT;%(comment_id)d\n" % locals()
+    command( cmd )
+
+def remove_host_acknowledgement(host_name):
+    """ Helper_Function: Remove a hosts Acknowledgment. """
+    cmd = "REMOVE_HOST_ACKNOWLEDGEMENT;%(host_name)s\n" % locals()
+    command( cmd )
+
+
 #-------------------------------------------------------------------------------
 if __name__ == "__main__":
     # As a example set the localhost to be down

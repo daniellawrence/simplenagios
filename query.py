@@ -169,8 +169,17 @@ def get_columns(lsl_query):
 def get_comments(extra_filter=None):
     """ Run the passed query and only return the columns of the results. """
     return query("GET comments\n", 
-    columns="host_name service_description author comment entry_type entry_time",
+    #columns="host_name service_description author comment entry_type entry_time",
     extra_filter=extra_filter)
+
+#------------------------------------------------------------------------------
+def get_comment(comment_id):
+    """ Run the passed query and only return the columns of the results. """
+    #extra_filter="comment_id=%(comment_id)s" % locals()
+    return query("GET comments\n")
+    #columns="comment_id host_name service_description author comment entry_type entry_time",
+    #extra_filter=extra_filter)
+
 
 def service_stats(extra_filter=None):
     """ Get all the stats for all the services that extra_filters: ok, warn, etc
