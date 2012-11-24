@@ -1,0 +1,66 @@
+{% extends "base.template" %}
+{% block jquery %}
+
+var table = $('table');
+    
+$('th')
+    .wrapInner('<span title="sort this column"/>')
+    .each(function(){
+        
+        var th = $(this),
+            thIndex = th.index(),
+            inverse = false;
+        
+        th.click(function(){
+            
+            table.find('td').filter(function(){
+                
+                return $(this).index() === thIndex;
+                
+            }).sortElements(function(a, b){
+                
+                return $.text([a]) > $.text([b]) ?
+                    inverse ? -1 : 1
+                    : inverse ? 1 : -1;
+                
+            }, function(){
+                
+                // parentNode is the element we want to move
+                return this.parentNode; 
+                
+            });
+            
+            inverse = !inverse;
+                
+        });
+            
+    });
+
+
+{% endblock %}
+{% block container %}
+<!--
+{{comment_list}}
+-->
+
+    <table class="table table-condensed" >
+        <tr>
+             <th>Host</th>
+             <th>Service</th>
+             <th>Author</th>
+             <th>Comment</th>
+             <th>Type</th>
+             <th>Time</th>
+             <th>Action</th>
+        </tr>
+	<tr>
+		<td><a href='{{ url_for("host_detail", host_name=comment.host_name) }}'/> {{comment.host_name}} </a></td>
+		<td>{{comment.service_description}}</td>
+		<td>{{comment.author}}</td>
+		<td>{{comment.comment}}</td>
+		<td>{{comment.entry_type}}</td>
+        <td>{{comment.entry_time_dt}}</td>
+        <td><a href='/comment/{{comment.id}}/delete'>Delete</a></td>
+        </tr>
+    </table>
+{% endblock %}
