@@ -183,11 +183,12 @@ def delete_comment(comment_id):
 
 #------------------------------------------------------------------------------
 @cached
-@App.route("/comment/<comment_id>/")
+@App.route("/comment/<int:comment_id>/")
 def single_comment(comment_id):
     """ Display a comment that matches a comment_id. """
-    comment_list = query.get_comment(comment_id)
-    return render_template('comment.template', comment_list=comment_list,
+    comment = query.get_comment(comment_id)
+    print comment
+    return render_template('comment.template', comment=comment,
     settings=settings )
 
 #------------------------------------------------------------------------------

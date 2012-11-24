@@ -175,8 +175,8 @@ def get_comments(extra_filter=None):
 #------------------------------------------------------------------------------
 def get_comment(comment_id):
     """ Run the passed query and only return the columns of the results. """
-    #extra_filter="comment_id=%(comment_id)s" % locals()
-    return query("GET comments\n")
+    extra_filter="id = %(comment_id)s" % locals()
+    return query("GET comments\n")[0]
     #columns="comment_id host_name service_description author comment entry_type entry_time",
     #extra_filter=extra_filter)
 

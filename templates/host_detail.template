@@ -72,7 +72,8 @@ $(function() {
 
   {% if host.acknowledged == 1 %}
   // Host has been acknowledged - host.acknowledged == 1
-  show_message("This host <em>{{host.name}}</em> is down, It <strong>has been acknowledged!</strong>");
+  show_message("This host <em>{{host.name}}</em> is down, It <strong>has been acknowledged!</strong>." +
+  "<a href='{{url_for('remove_host_acknowledgement', host_name=host.name)}}'>Remove acknowledgment</a> ", "warning");
   {% endif %}
   {% endif %}
 });
@@ -192,7 +193,7 @@ $(function() {
 		</tr>
 		{% for id,author,comment in host.comments_with_info %}
 			<tr>
-				<td>{{id}}</td>
+				<td><a href='/comment/{{id}}'>{{id}}</a></td>
 				<td>{{author}}</td>
 				<td>{{comment}}</td>
 			</tr>
