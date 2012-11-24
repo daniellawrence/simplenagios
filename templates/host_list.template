@@ -122,7 +122,11 @@ th.click(function(){
                  {% endif %}
                  </font>
              </td>
-             <td value='{{host.last_check}}'>{{host.last_check_td|format_td }}</td>
+             <td value='{{host.last_check}}'>
+               <a class='api_action' name="{{ url_for('schedule_recheck_host', host_name=host.name) }}" >
+                 {{host.last_check_td|format_td}} <i class='icon-repeat'></i>
+               </a>
+             </td>
              <td value='{{host.last_state_change}}' >
                 {{host.last_state_change_td|format_td}}
              </td>

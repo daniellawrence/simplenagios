@@ -50,7 +50,7 @@
         <div class="nav-collapse collapse">
           <ul class="nav">
             <li class="active"><a href="/tac">TAC</a></li>
-            <li><a  href="/hosts">Hosts</a></li>
+            <li><a  href="/host">Hosts</a></li>
         		<li>
         		<form class="navbar-form pull-left" method='get' action='/hosts-search/'>
           		<input type="text" id='host_name' name='host_name' class="span3"
@@ -99,7 +99,12 @@ function show_message(message_text, type){
 }
 
 $(".api_action").click( function(click_data){
+    console.log('.api_action:click:');
+    console.log( click_data );
     action_name = click_data.toElement.name;
+    if ( click_data.toElement.nodeName == "I"){
+        action_name = click_data.toElement.parentNode.name;
+    }
     console.log('Loading url: ' + action_name );
     $.get(action_name, function(action_data){
          message =  action_data['message'];

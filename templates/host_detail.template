@@ -81,7 +81,7 @@ $(function() {
 	</tr>
 	<tr>
 		<th>Last Check</th>
-    <td><a class='api_action' name="schedule_recheck" >{{host.last_check_td|format_td}} <i class='icon-repeat'></i></a></td>
+    <td><a class='api_action' name="schedule_recheck_host" >{{host.last_check_td|format_td}} <i class='icon-repeat'></i></a></td>
 	</tr>
 	<tr>
 		<th>Next Check</th><td>{{host.next_check_dt}}</td>

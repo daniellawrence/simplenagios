@@ -144,7 +144,7 @@ def tac():
 
 #------------------------------------------------------------------------------
 @cached
-@App.route("/hosts/")
+@App.route("/host/")
 def show_hosts():
     """ From a filter or no filter display a list of hosts. """
     extra_filters = gather_filters(request)
@@ -252,25 +252,25 @@ def schedule_recheck_service(host_name, service_name):
     """
     action.schedule_service_check(host_name, service_name)
     return jsonify( {'host_name': host_name, 'service_name': service_name,
-        'message': 'Check has been scheduled for a recheck as soon as possible'})
+        'message': 'Check %(service_name)s on %(host_name)s has been scheduled for a recheck as soon as possible' % locals() })
 
 
 #------------------------------------------------------------------------------
-@App.route("/host/<host_name>/schedule_recheck")
+@App.route("/host/<host_name>/schedule_recheck_host")
 def schedule_recheck_host(host_name):
     """ Given a host_name and service_name schedule a recheck of the sevice.
     """
     action.schedule_host_check(host_name)
     return jsonify( {'host_name': host_name,
-        'message': 'Check for host has been scheduled for a recheck as soon as possible'})
+        'message': 'Check for host  %(host_name)s has been scheduled for a recheck as soon as possible' % locals()})
 
-@App.route("/host/<host_name>/schedule_recheck")
+@App.route("/host/<host_name>/schedule_recheck_host_services")
 def schedule_recheck_host_services(host_name):
     """ Given a host_name schedule a recheck of all of the services.
     """
     action.schedule_service_check(host_name, service_name)
     return jsonify( {'host_name': host_name,
-        'message': 'All services on this host have been scheduled for a recheck as soon as possible'})
+        'message': 'All services on host %(host_name)s have been scheduled for a recheck as soon as possible' % locals()})
 
 
 #------------------------------------------------------------------------------
