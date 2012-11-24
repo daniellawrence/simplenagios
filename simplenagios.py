@@ -174,13 +174,21 @@ def comment():
     return render_template('comment_list.template', comment_list=comment_list,
     settings=settings )
 
+@App.route("/comment/<int:comment_id>/delete")
+def delete_comment(comment_id):
+    """ delete a comment """
+    action.delete_comment(comment_id)
+    return jsonify( {'comment_id': comment_id,
+        'message': 'deleted comment'} )
+
 #------------------------------------------------------------------------------
 @cached
-@App.route("/comment/<comment_id>/")
+@App.route("/comment/<int:comment_id>/")
 def single_comment(comment_id):
     """ Display a comment that matches a comment_id. """
-    comment_list = query.get_comment(comment_id)
-    return render_template('comment.template', comment_list=comment_list,
+    comment = query.get_comment(comment_id)
+    print comment
+    return render_template('comment.template', comment=comment,
     settings=settings )
 
 #------------------------------------------------------------------------------
@@ -274,6 +282,27 @@ def schedule_recheck_host_services(host_name):
 
 
 #------------------------------------------------------------------------------
+@App.route("/host/<host_name>/acknowledge", methods=['POST'])
+def acknowledge_host(host_name):
+    """ Given a host_name schedule a recheck of all of the services.
+    """
+    request_copy = request.form.copy()
+    message = request_copy.get('action_message')
+
+    action.ack_host(host_name, message)
+    return jsonify( {'host_name': host_name, 'ack_message': message,
+        'message': 'The %(host_name)s has been acknowledged' % locals()})
+
+#------------------------------------------------------------------------------
+@App.route("/host/<host_name>/remove_host_acknowledgement")
+def remove_host_acknowledgement(host_name):
+    """ Given a host_name remove_host_acknowledgement
+    """
+    action.remove_host_acknowledgement(host_name)
+    return jsonify( {'host_name': host_name, 
+        'message': 'The %(host_name)s has had its acknowledgement removed.' % locals()})
+
+#------------------------------------------------------------------------------
 @App.route("/host/<host_name>/service/<service_name>/")
 def service_detail(host_name, service_name):
     """ Find details of a service for a host and a service_name """
@@ -290,6 +319,8 @@ def service_detail(host_name, service_name):
 
     return render_template('service_detail.template', service=service, 
     settings=settings )
+
+
 
 #------------------------------------------------------------------------------
 @cached

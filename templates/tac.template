@@ -80,16 +80,16 @@
 			Total
 		</th>
 		<td>
-			<a href='/hosts/?state=0'>{{host_stats.ok}}</a>
+			<a href='/host/?state=0'>{{host_stats.ok}}</a>
 		</td>
 		<td>
-			<a href='/hosts/?state=1'>{{host_stats.warn}}</a>
+			<a href='/host/?state=1'>{{host_stats.warn}}</a>
 		</td>
 		<td>
-			<a href='/hosts/?state=2'>{{host_stats.error}}</a>
+			<a href='/host/?state=2'>{{host_stats.error}}</a>
 		</td>
 		<td>
-			<a href='/hosts/?state=2'>{{host_stats.unknown}}</a>
+			<a href='/host/?state=2'>{{host_stats.unknown}}</a>
 		</td>
 	</tr>
 	
@@ -98,16 +98,16 @@
 			Acknowledged
 		</th>
 		<td>
-			<a href='/hosts/?state=0&acknowledged=1'> - </a>
+			<a href='/host/?state=0&acknowledged=1'> - </a>
 		</td>
 		<td>
-			<a href='/hosts/?state=1&acknowledged=1'>{{host_stats.warn_ack}}</a>
+			<a href='/host/?state=1&acknowledged=1'>{{host_stats.warn_ack}}</a>
 		</td>
 		<td>
-			<a href='/hosts/?state=2&acknowledged=1'>{{host_stats.error_ack}}</a>
+			<a href='/host/?state=2&acknowledged=1'>{{host_stats.error_ack}}</a>
 		</td>
 		<td>
-			<a href='/hosts/?state=2&acknowledged=1'>{{host_stats.unknown_ack}}</a>
+			<a href='/host/?state=2&acknowledged=1'>{{host_stats.unknown_ack}}</a>
 		</td>
 	</tr>
 	<tr>
@@ -115,16 +115,16 @@
 			Not Acknowledged
 		</th>
 		<td>
-			<a href='/hosts/?state=0&acknowledged=0'> - </a>
+			<a href='/host/?state=0&acknowledged=0'> - </a>
 		</td>
 		<td>
-			<a href='/hosts/?state=1&acknowledged=0'>{{host_stats.warn_not_ack}}</a>
+			<a href='/host/?state=1&acknowledged=0'>{{host_stats.warn_not_ack}}</a>
 		</td>
 		<td>
-			<a href='/hosts/?state=2&acknowledged=0'>{{host_stats.error_not_ack}}</a>
+			<a href='/host/?state=2&acknowledged=0'>{{host_stats.error_not_ack}}</a>
 		</td>
 		<td>
-			<a href='/hosts/?state=2&acknowledged=0'>{{host_stats.unknown_not_ack}}</a>
+			<a href='/host/?state=2&acknowledged=0'>{{host_stats.unknown_not_ack}}</a>
 		</td>
 
 	</tr>

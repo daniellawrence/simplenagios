@@ -98,10 +98,16 @@ function show_message(message_text, type){
   new_message.fadeTo('slow',1);
 }
 
-$(".api_action").click( function(click_data){
+//$(".api_action").click( function(click_data){
+$(".api_action").live('click', function(click_data){
     console.log('.api_action:click:');
     console.log( click_data );
     action_name = click_data.toElement.name;
+    action_class = click_data.toElement.className;
+
+    if ( action_class.indexOf("reload") > 0 ){
+        $(this).parent().hide();
+    }
     if ( click_data.toElement.nodeName == "I"){
         action_name = click_data.toElement.parentNode.name;
     }

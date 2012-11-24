@@ -39,7 +39,9 @@ $('th')
 
 {% endblock %}
 {% block container %}
-
+<!--
+{{comment_list}}
+-->
 
     <table class="table table-condensed" >
         <tr>
@@ -49,6 +51,7 @@ $('th')
              <th>Comment</th>
              <th>Type</th>
              <th>Time</th>
+             <th>Action</th>
         </tr>
     {% for comment in comment_list %}
 	<tr>
@@ -57,7 +60,8 @@ $('th')
 		<td>{{comment.author}}</td>
 		<td>{{comment.comment}}</td>
 		<td>{{comment.entry_type}}</td>
-		<td>{{comment.entry_time_dt}}</td>
+        <td>{{comment.entry_time_dt}}</td>
+        <td><a href='/comment/{{comment.id}}/delete'>Delete</a></td>
         </tr>
     {% endfor %}
     </table>
