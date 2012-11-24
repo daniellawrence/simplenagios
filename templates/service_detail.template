@@ -35,6 +35,7 @@
 
 
 
+
 {% if service.acknowledged == 0 %}
 {% if service.state == 2 %}
 <div class="alert alert-error">
@@ -82,7 +83,7 @@
 		<th>Information</th><td>{{service.plugin_output}}</td>
 	</tr><tr>
 		<th>Last Check</th>
-    <td><a href="schedule_recheck"><i class='icon-repeat'></i>{{service.last_check_td|format_td}}</a></td>
+    <td><a class='api_action' name="schedule_recheck">{{service.last_check_td|format_td}} <i class='icon-repeat'></i></a></td>
 	</tr><tr>
 		<th>Next Check</th><td>{{service.next_check_td|format_td}}</td>
 	</tr><tr>
@@ -101,7 +102,7 @@
 <h4>Common Tasks</h4>
 
 <ul class="nav nav-list">
-  <li><a href="schedule_recheck"><i class="icon-repeat"></i> Schedule a check of this service</a></li>
+  <li><a class='api_action' name="schedule_recheck" ><i class="icon-repeat"></i> Schedule a check of this service</a></li>
   <li><a href=""><i class="icon-ok"></i> Acknowledge this service problem</a></li>
   <li><a href="#"><i class="icon-volume-up"></i> Send custom service notification</a></li>
 
@@ -194,5 +195,12 @@
 	{% endif %}
 </div>
 </div>
+
+{% endblock %}
+
+
+{% block jquery %}
+
+
 
 {% endblock %}

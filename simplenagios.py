@@ -9,8 +9,8 @@ from flask import render_template
 from flask import request, redirect
 from werkzeug.contrib.cache import SimpleCache
 from functools import wraps
-from flask import session, escape
-
+from flask import url_for
+from flask import jsonify
 # Importing things from simplenagios
 import query    # Used to make queries via livestatus.py
 import action   # Used to do actions via livestatus.py
@@ -144,7 +144,7 @@ def tac():
 
 #------------------------------------------------------------------------------
 @cached
-@App.route("/hosts/")
+@App.route("/host/")
 def show_hosts():
     """ From a filter or no filter display a list of hosts. """
     extra_filters = gather_filters(request)
@@ -185,7 +185,6 @@ def single_comment(comment_id):
 
 #------------------------------------------------------------------------------
 @cached
-@App.route("/host/<host_name>/")
 @App.route("/host/<host_name>/service/")
 @App.route("/host/<host_name>/services/")
 def host_services(host_name):
@@ -206,7 +205,7 @@ def host_services(host_name):
 
 #------------------------------------------------------------------------------
 @cached
-@App.route("/host/<host_name>/detail")
+@App.route("/host/<host_name>/")
 def host_detail(host_name):
     """ Given a hostname, show the extended detail of the host. """
 
@@ -252,23 +251,26 @@ def schedule_recheck_service(host_name, service_name):
     """ Given a host_name and service_name schedule a recheck of the sevice.
     """
     action.schedule_service_check(host_name, service_name)
-    return redirect("/host/%(host_name)s/service/%(service_name)s/" % locals() )
+    return jsonify( {'host_name': host_name, 'service_name': service_name,
+        'message': 'Check %(service_name)s on %(host_name)s has been scheduled for a recheck as soon as possible' % locals() })
 
 
 #------------------------------------------------------------------------------
-@App.route("/host/<host_name>/schedule_recheck")
+@App.route("/host/<host_name>/schedule_recheck_host")
 def schedule_recheck_host(host_name):
     """ Given a host_name and service_name schedule a recheck of the sevice.
     """
     action.schedule_host_check(host_name)
-    return redirect("/host/%(host_name)s/detail" % locals() )
+    return jsonify( {'host_name': host_name,
+        'message': 'Check for host  %(host_name)s has been scheduled for a recheck as soon as possible' % locals()})
 
-@App.route("/host/<host_name>/schedule_recheck")
+@App.route("/host/<host_name>/schedule_recheck_host_services")
 def schedule_recheck_host_services(host_name):
     """ Given a host_name schedule a recheck of all of the services.
     """
     action.schedule_service_check(host_name, service_name)
-    return redirect("/host/%(host_name)s/service/" % locals() )
+    return jsonify( {'host_name': host_name,
+        'message': 'All services on host %(host_name)s have been scheduled for a recheck as soon as possible' % locals()})
 
 
 #------------------------------------------------------------------------------

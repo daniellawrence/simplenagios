@@ -82,7 +82,7 @@ th.click(function(){
     <strong>Service state:</strong>
 
     <a href='?state=0' title='Show all OK services'>
-    <span class="label label-success">ok {{service_stats.ok}}</span></a>
+    <span class="label label-success">OK {{service_stats.ok}}</span></a>
 
     <a href='?state=1' title='Show all Warning services'>
     <span class="label label-warning">warn {{service_stats.warn}}</span><a/>
@@ -130,7 +130,7 @@ th.click(function(){
                 <i class='icon-volume-off'></i>
             {% endif %}
                  </div>
-                 <a href='/host/{{service.host_name}}/detail'>{{service.host_name}}</a>
+                 <a href='/host/{{service.host_name}}/'>{{service.host_name}}</a>
                  <div style='float: left;'>
 
                  {% if service.notes_url %}
@@ -158,7 +158,7 @@ th.click(function(){
 
 	        {% if service.state > 0 %}
                {% if service.acknowledged %}
-                 <a href='?acknowledged=1' title='This service has been acknoledged, show other services that are also acknowldeged'>
+                 <a href='?acknowledged=1' title='This service has been acknowledged, show other services that are also acknowledged'>
                      <i class='icon-ok'></i>
                  </a>
                 {% else %}
@@ -168,7 +168,11 @@ th.click(function(){
             {% endif %}
 
              </td>
-             <td value='{{service.last_check}}'>{{service.last_check_td|format_td }}</td>
+             <td value='{{service.last_check}}'>
+             <a class='api_action' name="{{ url_for('schedule_recheck_service', host_name=service.host_name, service_name=service.description) }}" >
+             {{service.last_check_td|format_td }}
+             </a>
+             </td>
              <td value='{{service.last_state_change}}' >{{service.last_state_change_td|format_td}}</td>
              <td value='{{service.current_attempt}}' >{{service.current_attempt}} / {{service.max_check_attempts}}</td>
              <td>{{service.plugin_output|truncate(length=150, killwords=False, end='...')}}</td>

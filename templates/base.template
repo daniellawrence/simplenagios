@@ -35,6 +35,7 @@
   .state_0, .state_1, .state_2, .state_3 { text-align: center; align: center;}
 
     </style>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script> 
 </head>
 <body>
   <div class="navbar navbar-fixed-top">
@@ -49,7 +50,7 @@
         <div class="nav-collapse collapse">
           <ul class="nav">
             <li class="active"><a href="/tac">TAC</a></li>
-            <li><a  href="/hosts">Hosts</a></li>
+            <li><a  href="/host">Hosts</a></li>
         		<li>
         		<form class="navbar-form pull-left" method='get' action='/hosts-search/'>
           		<input type="text" id='host_name' name='host_name' class="span3"
@@ -64,15 +65,63 @@
   </div>
 
   <div class="container"  >
+    <!-- Show a message when called -->
+    <div id='messages'>
+    <div id='message' class="alert" style='display:none;'>
+      <button type="button" class="close" data-dismiss="alert">X</button>
+      <h4>Message</h4>
+      <p id='message_text'>message text</p>
+    </div>
+  </div>
+    <!-- End show message -->
+
   {% block container %}
   {% endblock %}
   </div> <!-- /container -->
 
-<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script> 
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.sortElements.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.sort.js') }}"></script>
 <script type="text/javascript">
+/* Duplicate the message and set it up with all your custom text */
+function show_message(message_text, type){
+  type = typeof type !== 'undefined' ? type : "info";
+  new_message = $("#message").clone();
+  new_message.addClass("alert-" + type);
+  new_message.html(message_text);
+  $("#messages").append( new_message );
+  // add a close button to the message
+  new_message.append( '<button type="button" class="close" data-dismiss="alert">X</button>');
+  // slow fade in.
+  //new_message.slideDown("slow");
+  new_message.fadeTo('slow',1);
+}
+
+$(".api_action").click( function(click_data){
+    console.log('.api_action:click:');
+    console.log( click_data );
+    action_name = click_data.toElement.name;
+    if ( click_data.toElement.nodeName == "I"){
+        action_name = click_data.toElement.parentNode.name;
+    }
+    console.log('Loading url: ' + action_name );
+    $.get(action_name, function(action_data){
+         message =  action_data['message'];
+         if ( typeof message === 'undefined'){
+         show_message('Job was not sent to the Queue: Failed to call ' + window.location.pathname +  action_name + '!', 'error');
+         return ;
+         }
+         show_message(message);
+    });
+});
+
+/*
+show_message("default (info)");
+show_message("warn test","warn");
+show_message("error test","error");
+*/
+
 // Included javascript from templates
 {% block jquery %}
 {% endblock %}
