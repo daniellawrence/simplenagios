@@ -1,5 +1,10 @@
 {% extends "base.template" %}
 {% block container %}
+
+<!--
+HOST
+{{host}}
+-->
 <div class="page-header">
   <h1>
   <a href='/host/{{host.display_name}}'>{{host.display_name}}</a>
@@ -46,8 +51,10 @@ $(function() {
     show_message("{{host.name}} is in flapping, alerting has been disabled.", "error");
   {% endif %}
 
-  {% if host.acknowledged == 0 and host.state == 1 %}
-  // Host is down and not acknowledged
+  {% if host.state == 1 %}
+  // Host is down - host.state == 1
+  {% if host.acknowledged == 0 %}
+  // Host has not been acknowledged - host.acknowledged == 0
   show_message("" +
   "Host {{host.name}} is in <strong>down</strong> and has not been acknowledged!" +
   {% if settings.WRITE_MODE %}
@@ -60,8 +67,9 @@ $(function() {
   {% endif %}
   "","error");
   {% else %}
-  // Host is Down, however it has been acknowledged
-  show_message("This host <em>{{host.name}}</em> has been acknowledged!");
+  // Host has been acknowledged - host.acknowledged == 1
+  show_message("This host <em>{{host.name}}</em> is down, It <strong>has been acknowledged!</strong>");
+  {% endif %}
   {% endif %}
 });
 </script>
