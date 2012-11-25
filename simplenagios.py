@@ -214,8 +214,7 @@ def host_services(host_name):
 
 #------------------------------------------------------------------------------
 @App.template_filter('graph_host_service')
-#@App.route("/host/<host_name>/graph/<service_name>")
-def graph_host_service(host_name, service_name):
+def graph_host_service_filter(host_name, service_name):
     """ Given a host_name and service_name, generate a graphite graphite graph.
     """
     if service_name in settings.GRAPHITE_MAP:
@@ -226,6 +225,20 @@ def graph_host_service(host_name, service_name):
         graphite_host = settings.GRAPHITE_HOST
         url = "http://%(graphite_host)s/render?from=-24hours&target=%(target)s&template=plain" % locals()
         return url
+        
+@App.route("/host/<host_name>/graph/<service_name>")
+def graph_host_service(host_name, service_name):
+    """ Take a generate graphite url, and turn it in to json. """
+    url = graph_host_service_filter(host_name, service_name)
+    options = {}
+    for key_value in url.split('?')[1].split('&'):
+        (key, value ) = key_value.split('=')
+        options[key] = value
+
+    # Convert to json
+    return jsonify( {'host_name': host_name, 'service_name': service_name,
+        'url': url, 'url_api': options })
+
 
 #------------------------------------------------------------------------------
 @cached
