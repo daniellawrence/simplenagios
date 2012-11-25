@@ -86,7 +86,7 @@ def tag_service_status(status):
 def gather_filters(request):
     """ Generic filter processer to be used with query """
     request_args = request.args
-    allowed_filters = ('state', 'acknowledged', 'plugin_output', 'groups')
+    allowed_filters = ('state', 'acknowledged', 'plugin_output', 'groups','scheduled_downtime_depth')
     extra_filters = []
     for filter_column in allowed_filters:
         filter_data = request_args.get(filter_column, None)
@@ -303,6 +303,17 @@ def remove_host_acknowledgement(host_name):
         'message': 'The %(host_name)s has had its acknowledgement removed.' % locals()})
 
 #------------------------------------------------------------------------------
+@App.route("/host/<host_name>/schedule_host_downtime/<int:length_in_minutes>")
+def schedule_host_downtime(host_name, length_in_minutes):
+    """ Given a host_name schedule some downtime
+    """
+    length_in_seconds = length_in_minutes * 60
+    action.schedule_host_downtime(host_name, length_in_seconds )
+    return jsonify( {'host_name': host_name, 'length_in_minutes': length_in_minutes,
+        'message': 'The %(host_name)s has had scheduled for %(length_in_minutes)d minutes of downtime.' % locals()})
+
+
+#------------------------------------------------------------------------------
 @App.route("/host/<host_name>/service/<service_name>/")
 def service_detail(host_name, service_name):
     """ Find details of a service for a host and a service_name """
@@ -360,7 +371,11 @@ def all_services():
     service_list = query.get_all_services(
     columns='host_name description state last_check last_state_change plugin_output acknowledged host_acknowledged max_check_attempts current_attempt',
     extra_filter=extra_filters)
-    service_stats = query.service_stats(extra_filter=extra_filters)
+    try:
+        service_stats = query.service_stats(extra_filter=extra_filters)
+    except Exception, e:
+        return redirect( url_for('tac'))
+
     return render_template('service_list.template', service_list=service_list,
     service_stats=service_stats, settings=settings )
 

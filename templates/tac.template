@@ -193,6 +193,41 @@
 		<td>
 			<a href='/service/?state=3&acknowledged=0'>{{service_stats.unknown_not_ack}}</a>
 		</td>
+   	</tr>
+   	<tr>
+		<th>In Downtime</th>
+		<td>
+			<a href='/service/?state=0&scheduled_downtime_depth=1'>
+			{{service_stats.total_downtime.ok}}<i class='icon-wrench'></i></a>
+		</td>
+		<td>
+			<a href='/service/?state=1&scheduled_downtime_depth=1'>
+			{{service_stats.total_downtime.warning}}<i class='icon-wrench'></i></a>
+		</td>
+		<td>
+			<a href='/service/?state=2&scheduled_downtime_depth=1'>
+			{{service_stats.total_downtime.error}}<i class='icon-wrench'></i></a>
+		</td>
+		<td>
+			<a href='/service/?state=3&scheduled_downtime_depth=1'>
+			{{service_stats.total_downtime.unknown}}<i class='icon-wrench'></i></a>
+		</td>
+	</tr>
+	   	<tr>
+		<th>Checks Disabled</th>
+		<td>
+			<a href='/service/?state=0&checks_enabled=1'>{{service_stats.total_disabled.ok}}</a>
+		</td>
+		<td>
+			<a href='/service/?state=1&checks_enabled=1'>{{service_stats.total_disabled.warning}}</a>
+		</td>
+		<td>
+			<a href='/service/?state=2&checks_enabled=1'>{{service_stats.total_disabled.error}}</a>
+		</td>
+		<td>
+			<a href='/service/?state=3&checks_enabled=1'>{{service_stats.total_disabled.unknown}}</a>
+		</td>
+	</tr>
     </table>
 </div>
 {% endblock %}

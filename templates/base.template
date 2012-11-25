@@ -112,13 +112,18 @@ $(".api_action").live('click', function(click_data){
         action_name = click_data.toElement.parentNode.name;
     }
     console.log('Loading url: ' + action_name );
-    $.get(action_name, function(action_data){
-         message =  action_data['message'];
-         if ( typeof message === 'undefined'){
-         show_message('Job was not sent to the Queue: Failed to call ' + window.location.pathname +  action_name + '!', 'error');
-         return ;
-         }
-         show_message(message);
+    $.get(action_name)
+    .success( function( action_data ) {
+        message =  action_data['message'];
+        if ( typeof message === 'undefined'){
+          show_message('Job was not sent to the Queue: Failed to call ' + window.location.pathname +  action_name + '!', 'error');
+          return ;
+        }
+        console.log(message);
+        show_message(message);
+    })
+    .error( function( action_data) {
+          show_message('Job was not sent to the Queue: Failed to call ' + window.location.pathname +  action_name + '!', 'error');
     });
 });
 

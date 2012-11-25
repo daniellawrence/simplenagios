@@ -79,6 +79,34 @@ def remove_host_acknowledgement(host_name):
     command( cmd )
 
 
+    
+    
+
+def _schedule_host_downtime(host,comment,duration,start_time=0,end_time=0,fixed=1,trigger_id=0,author=None):
+    """
+    SCHEDULE_HOST_DOWNTIME;<host_name>;<start_time>;<end_time>;<fixed>;<trigger_id>;<duration>;<author>;<comment>
+    # This is a sample shell script showing how you can submit the SCHEDULE_HOST_DOWNTIME command
+    # to Nagios.  Adjust variables to fit your environment as necessary.
+    now=`date +%s`
+    commandfile='/usr/local/nagios/var/rw/nagios.cmd'
+    /bin/printf "[%lu] SCHEDULE_HOST_DOWNTIME;host1;1110741500;1110748700;0;0;7200;Some One;Some Downtime Comment\n" $now > $commandfile
+    """
+    # if i dont have a start_time then set it to now + the duration
+    if start_time == 0:
+        start_time = int( time.time() )
+        end_time = start_time + duration
+
+    cmd = "SCHEDULE_HOST_DOWNTIME;%(host)s;%(start_time)s;%(end_time)s;%(fixed)s;%(trigger_id)s;%(duration)s;%(author)s;%(comment)s" % locals()
+    command( cmd )
+
+def schedule_host_downtime(host,duration):
+    """ Put a host into maintenance for duration seconds
+    """
+    _schedule_host_downtime(host=host,comment="scheduled by simple nagios.",duration=duration,start_time=0,end_time=0,fixed=1,author="nagiosadmin")
+
+
+
+
 #-------------------------------------------------------------------------------
 if __name__ == "__main__":
     # As a example set the localhost to be down
