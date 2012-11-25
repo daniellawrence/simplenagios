@@ -313,6 +313,15 @@ def schedule_host_downtime(host_name, length_in_minutes):
     return jsonify( {'host_name': host_name, 'length_in_minutes': length_in_minutes,
         'message': 'The %(host_name)s has had scheduled for %(length_in_minutes)d minutes of downtime.' % locals()})
 
+#------------------------------------------------------------------------------
+@App.route("/host/<host_name>/del_host_downtime/<int:downtime_id>")
+def del_host_downtime(host_name, downtime_id):
+    """ Given a host_name schedule some downtime
+    """
+    action.del_host_downtime( downtime_id )
+    return jsonify( {'host_name': host_name, 'downtime_id': downtime_id,
+        'message': 'The downtime window has been removed from %(host_name)s.' % locals()})
+
 
 #------------------------------------------------------------------------------
 @App.route("/host/<host_name>/service/<service_name>/")

@@ -1,43 +1,5 @@
 {% extends "base.template" %}
-{% block jquery %}
 
-var table = $('table');
-    
-$('th')
-    .wrapInner('<span title="sort this column"/>')
-    .each(function(){
-        
-        var th = $(this),
-            thIndex = th.index(),
-            inverse = false;
-        
-        th.click(function(){
-            
-            table.find('td').filter(function(){
-                
-                return $(this).index() === thIndex;
-                
-            }).sortElements(function(a, b){
-                
-                return $.text([a]) > $.text([b]) ?
-                    inverse ? -1 : 1
-                    : inverse ? 1 : -1;
-                
-            }, function(){
-                
-                // parentNode is the element we want to move
-                return this.parentNode; 
-                
-            });
-            
-            inverse = !inverse;
-                
-        });
-            
-    });
-
-
-{% endblock %}
 {% block container %}
 <!--
 {{comment_list}}
@@ -55,7 +17,7 @@ $('th')
         </tr>
     {% for comment in comment_list %}
 	<tr>
-		<td>{{comment.host_name}}</td>
+		<td><a href='{{url_for('host', host_name=comment.host_name)}}'>{{comment.host_name}}</a></td>
 		<td>{{comment.service_description}}</td>
 		<td>{{comment.author}}</td>
 		<td>{{comment.comment}}</td>

@@ -180,6 +180,12 @@ def get_comment(comment_id):
     #columns="comment_id host_name service_description author comment entry_type entry_time",
     #extra_filter=extra_filter)
 
+def get_downtimes(extra_filter=None):
+    return query("GET get_downtimes", extra_filter=extra_filter)
+
+def get_downtime(downtime_id):
+    return query("GET get_downtimes", extra_filter="id = %(downtime_id)d" % locals())
+
 
 def service_stats(extra_filter=None):
     """ Get all the stats for all the services that extra_filters: ok, warn, etc

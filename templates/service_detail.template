@@ -41,7 +41,7 @@
 <div class="alert alert-error">
   <button type="button" class="close" data-dismiss="alert">×</button>
   <h4>Error!</h4>
-  This service <em>{{service.description}}</em> is in an errored state and has not been acknowledged!
+  This service <em>{{service.description}}</em> is in an critical state and has not been acknowledged!
   {% if settings.WRITE_MODE %}
     <form action='/take_action/' method='post' target='_blank'>
     <input name='action_type' type='hidden' value='ack' />

@@ -80,7 +80,7 @@ $(function() {
 });
 </script>
 
-<div class="row-fuild">
+<div class="row-fuild span12">
 <div class='span5'>
 <h3>Host Overview</h3>
 <table class='table table-bordered table-condensed'>
@@ -124,12 +124,23 @@ $(function() {
 <li><a href="#myModal" data-toggle="modal"><i class="icon-time"></i> Schedule downtime</a></li>
 {% endif %}
 
+{% if host.scheduled_downtime_depth == 1 %}
+<!-- 
+ we are not currently in a downtime window
+ host.scheduled_downtime_depth == 0
+-->
+{% for id, author, comment in host.downtimes_with_info %}
+<li><a class='api_action hide' name='{{url_for('del_host_downtime', downtime_id=id, host_name=host.name) }}' >
+<i class="icon-wrench"></i> Remove {{host.name}}'s downtime</a></li>
+{% endfor %}
+{% endif %}
+
 {% if host.acknowledged == 1 %}
   <!--
   Host has been acknowledged, give the user the option to stop the maintenance
   host.acknowledged == 1
   -->
-  <li><a class='api_action reload' name='{{url_for('remove_host_acknowledgement', host_name=host.name)}}'>Remove acknowledgment</a></li>
+  <li><a href='#' class='api_action reload' name='{{url_for('remove_host_acknowledgement', host_name=host.name)}}'><i class='icon-remove'></i> Remove acknowledgment</a></li>
 {% endif %}
 
 </ul>

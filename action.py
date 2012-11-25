@@ -3,6 +3,7 @@
 # from a python program
 import time
 from contrib import livestatus
+import query
 import settings
 
 def command(command):
@@ -78,8 +79,12 @@ def remove_host_acknowledgement(host_name):
     cmd = "REMOVE_HOST_ACKNOWLEDGEMENT;%(host_name)s\n" % locals()
     command( cmd )
 
+def del_host_downtime(downtime_id=None):
+    """ Helper_Function: Remove a hosts downtime based on the downtime_id
+    """
+    cmd = "DEL_HOST_DOWNTIME;%(downtime_id)s" % locals()
+    command( cmd )
 
-    
     
 
 def _schedule_host_downtime(host,comment,duration,start_time=0,end_time=0,fixed=1,trigger_id=0,author=None):

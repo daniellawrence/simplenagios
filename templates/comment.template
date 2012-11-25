@@ -55,7 +55,7 @@ $('th')
         </tr>
 	<tr>
 		<td><a href='{{ url_for("host_detail", host_name=comment.host_name) }}'/> {{comment.host_name}} </a></td>
-		<td>{{comment.service_description}}</td>
+        <td><a href='{{ url_for("service_detail", host_name=comment.host_name, service_name=comment.service_description) }}'/> {{comment.service_description}} </a></td>
 		<td>{{comment.author}}</td>
 		<td>{{comment.comment}}</td>
 		<td>{{comment.entry_type}}</td>

@@ -108,6 +108,9 @@ $(".api_action").live('click', function(click_data){
     if ( action_class.indexOf("reload") > 0 ){
         $(this).parent().hide();
     }
+        if ( action_class.indexOf("hide") > 0 ){
+        $(this).parent().hide();
+    }
     if ( click_data.toElement.nodeName == "I"){
         action_name = click_data.toElement.parentNode.name;
     }
@@ -127,11 +130,46 @@ $(".api_action").live('click', function(click_data){
     });
 });
 
-/*
-show_message("default (info)");
-show_message("warn test","warn");
-show_message("error test","error");
-*/
+// Code used to sort all tables
+var th = jQuery('th'),
+         inverse = false;
+            
+th.click(function(){
+  var header = $(this),
+  index = header.index();
+                    
+  header
+  .closest('table')
+  .find('td')
+  .filter(function(){
+    return $(this).index() === index;
+  })
+  .sort(function(a, b){
+                        
+    a = $(a);
+    b = $(b);
+
+    a_v = a.attr('value');
+    b_v = b.attr('value');
+
+    // If the td is missing a value attr, then sort on the text of the td.
+    if (typeof a_v === 'undefined' || a_v === false) {
+     a_v = a.text();
+     b_v = b.text();
+    }
+                        
+  return (
+     isNaN(a_v) || isNaN(b_v) ?
+     a_v > b_v : +a_v > +b_v
+     ) ?
+     inverse ? -1 : 1 :
+     inverse ? 1 : -1;
+  }, function(){
+     return this.parentNode;
+  });
+  inverse = !inverse;
+});
+
 
 // Included javascript from templates
 {% block jquery %}
