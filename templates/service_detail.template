@@ -1,10 +1,12 @@
 {% extends "base.template" %}
 {% block container %}
 
+
+
 <div class="page-header">
   <h1>
 	<a href='/service/{{service.description}}/'>
-	{{service.description}}</a><small> on </small><a href='/host/{{service.host_name}}/detail'>{{service.host_name}}</a>: <small>a {{service.notification_period}} service, status {{service.plugin_output}}.</small>
+	{{service.description}}</a><small> on </small><a href='/host/{{service.host_name}}'>{{service.host_name}}</a>: <small>a {{service.notification_period}} service, status {{service.plugin_output}}.</small>
    </h1>
 
 	<strong>{{service.host_name}} other services:</strong>
@@ -95,6 +97,13 @@
 	</tr>
 </table>
 </div>
+
+{% if service.description in settings.GRAPHITE_MAP %}
+<div class='span5'>
+  <h3>24hours of {{service.description}}</h3>
+  <img src='{{service.host_name|graph_host_service(service.description)}}' />
+</div>
+{% endif %}
 
 {% if settings.WRITE_MODE %}
 <!-- 
@@ -195,6 +204,7 @@
 	{% endif %}
 </div>
 </div>
+
 
 {% endblock %}
 

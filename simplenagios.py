@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """ SimpleNagios:
 
-This is a nagios readonly* (mostly)
+This is a nagios read-only* (mostly)
 
 """
 from flask import Flask
@@ -45,7 +45,8 @@ def cached(timeout=60, key='view/%s'):
 #------------------------------------------------------------------------------
 @App.template_filter('format_td')
 def reverse_filter(time_delta):
-    """ Convert a timedelta into a min, hours or days """
+    """ Convert a time_delta into minutes, hours or days difference from the
+    current time """
     time_in_minutes = time_delta.total_seconds() / 60
     if time_in_minutes < 180:
         return "%d min" % time_in_minutes
@@ -57,7 +58,7 @@ def reverse_filter(time_delta):
 #------------------------------------------------------------------------------
 @App.template_filter('host_status')
 def tag_host_status(status):
-    """ Convert a host_status into an english word. 
+    """ Convert a host_status into an English word. 
     For example:
     'up' is stored as 0. 
     """
@@ -70,7 +71,7 @@ def tag_host_status(status):
 #------------------------------------------------------------------------------
 @App.template_filter('service_status')
 def tag_service_status(status):
-    """ Convert a service_status into an english word.
+    """ Convert a service_status into an English word.
     For example:
     'ok' is stored as 0.
     """
@@ -131,7 +132,7 @@ def tac():
         error_message = """
         SimpleNagios received an error trying to connect to the nagios broker.
         <Br />
-        You might want to check you'r settings.py file and make sure that nagios
+        You might want to check your settings.py file and make sure that nagios
         is currently running as expected.
         <Br />
         The error message was:
@@ -159,7 +160,7 @@ def show_hosts():
 #------------------------------------------------------------------------------
 @App.route("/hosts-search/")
 def hosts_search():
-    """ Take a GET argument of host_name and redirect to a nice url. """
+    """ Take a GET argument of host_name and redirect to a nice URL. """
     host_name = request.args.get('host_name', None)
     if not host_name:
         return redirect( "/hosts/" )
@@ -188,7 +189,6 @@ def delete_comment(comment_id):
 def single_comment(comment_id):
     """ Display a comment that matches a comment_id. """
     comment = query.get_comment(comment_id)
-    print comment
     return render_template('comment.template', comment=comment,
     settings=settings )
 
@@ -206,17 +206,32 @@ def host_services(host_name):
     try:
         service_stats = query.service_stats(
         extra_filter="host_name = %(host_name)s" % locals())
-    except Exception as error:
+    except Exception:
         return redirect("/tac")
 
     return render_template('service_list.template', service_list=service_list,
     service_stats=service_stats,settings=settings )
 
 #------------------------------------------------------------------------------
+@App.template_filter('graph_host_service')
+#@App.route("/host/<host_name>/graph/<service_name>")
+def graph_host_service(host_name, service_name):
+    """ Given a host_name and service_name, generate a graphite graphite graph.
+    """
+    if service_name in settings.GRAPHITE_MAP:
+        # Generate the format of the hostname that graphite is expecting.
+        hostname = "%s.%s" % ( host_name[0], host_name )
+        # Grab the target from the settings file, for this service.
+        target = settings.GRAPHITE_MAP[service_name]['target'] % locals()
+        graphite_host = settings.GRAPHITE_HOST
+        url = "http://%(graphite_host)s/render?from=-24hours&target=%(target)s&template=plain" % locals()
+        return url
+
+#------------------------------------------------------------------------------
 @cached
 @App.route("/host/<host_name>/")
 def host_detail(host_name):
-    """ Given a hostname, show the extended detail of the host. """
+    """ Given a host_name, show the extended detail of the host. """
 
     # Grab a single host from the query.get_host()
     results = query.get_host(host_name)
@@ -257,7 +272,7 @@ def take_action():
 #------------------------------------------------------------------------------
 @App.route("/host/<host_name>/service/<service_name>/schedule_recheck")
 def schedule_recheck_service(host_name, service_name):
-    """ Given a host_name and service_name schedule a recheck of the sevice.
+    """ Given a host_name and service_name schedule a recheck of the service.
     """
     action.schedule_service_check(host_name, service_name)
     return jsonify( {'host_name': host_name, 'service_name': service_name,
@@ -267,7 +282,7 @@ def schedule_recheck_service(host_name, service_name):
 #------------------------------------------------------------------------------
 @App.route("/host/<host_name>/schedule_recheck_host")
 def schedule_recheck_host(host_name):
-    """ Given a host_name and service_name schedule a recheck of the sevice.
+    """ Given a host_name and service_name schedule a recheck of the service.
     """
     action.schedule_host_check(host_name)
     return jsonify( {'host_name': host_name,
@@ -301,7 +316,7 @@ def remove_host_acknowledgement(host_name):
     """
     action.remove_host_acknowledgement(host_name)
     return jsonify( {'host_name': host_name, 
-        'message': 'The %(host_name)s has had its acknowledgement removed.' % locals()})
+        'message': 'The %(host_name)s has had its acknowledgment removed.' % locals()})
 
 #------------------------------------------------------------------------------
 @App.route("/host/<host_name>/schedule_host_downtime/<int:length_in_minutes>")
