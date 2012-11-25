@@ -86,7 +86,8 @@ def tag_service_status(status):
 def gather_filters(request):
     """ Generic filter processer to be used with query """
     request_args = request.args
-    allowed_filters = ('state', 'acknowledged', 'plugin_output', 'groups','scheduled_downtime_depth')
+    allowed_filters = ('state', 'acknowledged', 'plugin_output', 'groups',
+        'scheduled_downtime_depth','checks_enabled')
     extra_filters = []
     for filter_column in allowed_filters:
         filter_data = request_args.get(filter_column, None)
