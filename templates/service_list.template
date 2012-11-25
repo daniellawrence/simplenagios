@@ -136,7 +136,7 @@
              </td>
              <td value='{{service.last_state_change}}' >{{service.last_state_change_td|format_td}}</td>
              <td value='{{service.current_attempt}}' >{{service.current_attempt}} / {{service.max_check_attempts}}</td>
-             <td>{{service.plugin_output|truncate(length=150, killwords=False, end='...')}}</td>
+             <td>{{service.plugin_output|truncate(length=100, killwords=False, end='...')}}</td>
         </tr>
     {% endfor %}
     </table>
