@@ -54,8 +54,8 @@
     <a href='?state=2' title='Show all critical services'>
     <span class="label label-important">crit {{service_stats.error}}</span><a/>
 
-    <a href='?state=4' title='Show all pending services'>
-    <span class="label label-info">pending</span><a/>
+    <a href='?state=> 0' title='Services that are not ok'>
+    <span class="label label-info">&nbsp;:( {{service_stats.warn + service_stats.unknown + service_stats.error}}</span><a/>
 
     <a href='?' title='show all services'>
     <span class="label label-inverse">&nbsp;all</span><a/>
@@ -110,7 +110,7 @@
                     <a href='/service/{{service.description}}/?state=> 0'><i class='icon-list'></i></a>
                  </div>
              </td>
-             <td class='state_{{service.state}}'>
+             <td class='state_{{service.state}}' value='{{service.state|service_status}}'>
             <!--
                  <a href='?state={{service.state}}'>
                  {{service.state|service_status}}

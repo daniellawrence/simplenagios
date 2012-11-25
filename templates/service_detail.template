@@ -23,8 +23,8 @@
 	<a href='/host/{{service.host_name}}/services/?state=2'>
 	<span class="label label-important">&nbsp;{{service.host_num_services_hard_crit}}</span><a/>
 
-	<a href='/host/{{service.host_name}}/services/?state=4'>
-	<span class="label label-info">&nbsp;{{service.host_num_services_pending}}</span><a/>
+	<a href='/host/{{service.host_name}}/services/?state=> 0' title='Services that are not ok'>
+	<span class="label label-info">&nbsp;{{service.host_num_services_warn + service.host_num_services_unknown + service.host_num_services_hard_crit}}</span><a/>
 
 	<a href='/host/{{service.host_name}}/services/'>
 	<span class="label label-inverse">&nbsp;{{service.host_num_services}}</span><a/>
