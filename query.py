@@ -273,12 +273,6 @@ Columns: state acknowledged scheduled_downtime_depth checks_enabled
 
         total_state[ state ] += count
 
-    #print "total", total_state 
-    #print "no_ack", total_not_acknowledged 
-    #print "ack", total_acknowledged
-    #print "downtime", total_in_downtime
-    #print "no-downtime", total_not_in_downtime
-
     j = {
 	# OK status
 	'ok': int(s[0]),
@@ -365,6 +359,60 @@ Stats: acknowledged = 1
 StatsAnd: 2
 """, return_type='row', extra_filter=extra_filter  )
 
+    total_state = {}
+    total_acknowledged = {}
+    total_not_acknowledged = {}
+    total_in_downtime = {}
+    total_not_in_downtime = {}
+    total_enabled = {}
+    total_disabled = {}
+
+    z = query(
+"""GET hosts
+Stats: state != 9999
+Columns: state acknowledged scheduled_downtime_depth checks_enabled
+""", return_type='table', extra_filter=extra_filter  )
+
+    for group in z:
+        (state, acknowledged, scheduled_downtime_depth, checks_enabled, count ) = group
+        acknowledged = int( acknowledged )
+        scheduled_downtime_depth = int( scheduled_downtime_depth )
+        checks_enabled = int( checks_enabled)
+        if state == '0':
+            state = 'ok'
+        if state == '1':
+            state = 'warning'
+        if state == '2':
+            state = 'error'
+        if state == '3':
+            state = 'unknown'
+        if state not in total_state:
+            total_state[ state ] = 0
+            total_acknowledged[ state ] = 0
+            total_not_acknowledged[ state ] = 0
+            total_in_downtime[ state ] = 0
+            total_not_in_downtime[ state ] = 0
+            total_enabled[ state ] = 0
+            total_disabled[ state ] = 0
+
+
+        if acknowledged == 1:
+            total_acknowledged[ state ] += count
+        else:
+            total_not_acknowledged[ state ] += count
+
+        if scheduled_downtime_depth == 1:
+            total_in_downtime[ state ] += count
+        else:
+            total_not_in_downtime[ state ] += count
+
+        if checks_enabled == 1:
+            total_enabled[ state ] += count
+        else:
+            total_disabled[ state ] += count
+
+
+        total_state[ state ] += count
 
     j = {
 	# OK status
@@ -406,6 +454,13 @@ StatsAnd: 2
 	'unknown_not_ack_percent':  ( j['unknown_not_ack'] / float( total ) * 100 )
    }
     j.update(extra_stats)
+    j['total_state'] = total
+    j["total_no_ack"] = total_not_acknowledged 
+    j["total_ack"] = total_acknowledged
+    j["total_downtime"] = total_in_downtime
+    j["total_no_downtime"] = total_not_in_downtime
+    j["total_enabled"] = total_enabled
+    j["total_disabled"] = total_disabled
     return j
 
 
