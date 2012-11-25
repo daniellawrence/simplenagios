@@ -3,7 +3,9 @@
 
 <!--
 HOST
-{{host}}
+{% for k,v in host.items() %}
+{{k}}:{{v}}
+{% endfor %}
 -->
 <div class="page-header">
   <h1>
@@ -72,15 +74,14 @@ $(function() {
 
   {% if host.acknowledged == 1 %}
   // Host has been acknowledged - host.acknowledged == 1
-  show_message("This host <em>{{host.name}}</em> is down, It <strong>has been acknowledged!</strong>." +
-  "<a class='api_action reload' name='{{url_for('remove_host_acknowledgement', host_name=host.name)}}'>Remove acknowledgment</a> ", "warning");
+  show_message("This host <em>{{host.name}}</em> is down, It <strong>has been acknowledged!</strong>.", "warning");
   {% endif %}
   {% endif %}
 });
 </script>
 
 <div class="row-fuild">
-<div class='span6'>
+<div class='span5'>
 <h3>Host Overview</h3>
 <table class='table table-bordered table-condensed'>
 	<tr>
@@ -97,18 +98,75 @@ $(function() {
     <td><a class='api_action' name="schedule_recheck_host" >{{host.last_check_td|format_td}} <i class='icon-repeat'></i></a></td>
 	</tr>
 	<tr>
-		<th>Next Check</th><td>{{host.next_check_dt}}</td>
+		<th>Next Check</th><td>{{host.next_check_td|format_td}}</td>
 	</tr>
 	<tr>
 		<th>Last Change</th><td>{{host.last_state_change_td|format_td}}</td>
 	</tr>
 	<tr>
-		<th>Last Notifcation</th><td>{{host.last_notification_td|format_td}}</td>
+		<th>Last Notification</th><td>{{host.last_notification_td|format_td}}</td>
 	</tr>
 	<tr>
-		<th>Next Notifcation</th><td>{{host.next_notification_td|format_td}}</td>
+		<th>Next Notification</th><td>{{host.next_notification_td|format_td}}</td>
 	</tr>
 </table>
+</div>
+
+<div class='row'>
+<div class='span3'>
+<h3>Actions</h3>
+<ul class='nav nav-list'>
+{% if host.scheduled_downtime_depth == 0 %}
+<!-- 
+ we are not currently in a downtime window
+ host.scheduled_downtime_depth == 0
+-->
+<li><a href="#myModal" data-toggle="modal"><i class="icon-time"></i> Schedule downtime</a></li>
+{% endif %}
+
+{% if host.acknowledged == 1 %}
+  <!--
+  Host has been acknowledged, give the user the option to stop the maintenance
+  host.acknowledged == 1
+  -->
+  <li><a class='api_action reload' name='{{url_for('remove_host_acknowledgement', host_name=host.name)}}'>Remove acknowledgment</a></li>
+{% endif %}
+
+</ul>
+<!-- Button to trigger modal -->
+
+ 
+<!-- Modal -->
+<form action='schedule_host_downtime' method='post'>
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Schedule downtime for {{host.name}}.</h3>
+  </div>
+  <div class="modal-body">
+  <h4>Downtime length</h4>
+  <ul class='nav nav-list'>
+    <li>Short</li>
+    <li><a class='api_action' name='schedule_host_downtime/60'   data-dismiss="modal" ><i class="icon-time"></i>60 minutes downtime</a></li>
+    <li><a class='api_action' name='schedule_host_downtime/120'  data-dismiss="modal"><i class="icon-time"></i>2 hour downtime</a></li>
+    <li><a class='api_action' name='schedule_host_downtime/240'  data-dismiss="modal"><i class="icon-time"></i>4 hour downtime</a></li>
+    <li>Long</li>
+    <li><a class='api_action' name='schedule_host_downtime/480'  data-dismiss="modal"><i class="icon-time"></i>8 hour downtime</a></li>
+    <li><a class='api_action' name='schedule_host_downtime/720'  data-dismiss="modal"><i class="icon-time"></i>12 hour downtime</a></li>
+    <li><a class='api_action' name='schedule_host_downtime/1440' data-dismiss="modal"><i class="icon-time"></i>1 day downtime</a></li>
+    <li><a class='api_action' name='schedule_host_downtime/2880' data-dismiss="modal"><i class="icon-time"></i>2 days downtime</a></li>
+  </ul>
+  <input type='text' class='input' placeholder='Why?' name='comment' />
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <input type='submit' class="btn btn-primary" value='Save Changes' />
+  </div>
+</div>
+</form>
+
+
+</div>
 </div>
 
 {% if settings.WRITE_MODE %}
